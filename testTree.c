@@ -2,8 +2,9 @@
 
 int main()
 {
-	char str[] = "(b+c+b)+1";
-	printf("%s\n",str);
+  char str[100];// = "(b+c+b)+1";
+        scanf("%s",str);
+	printf("\n%s\n",str);
 	// Search for the operator with highest precedence. 
 	int numberOfParantesis = 0;
 	int deepness = 0;
@@ -38,6 +39,7 @@ int main()
 					return -1;
 				numberOfParantesis--;
 				deepness--;
+				lastOperador='n';
 				break;
 			case '*':
 			case '/':
@@ -81,3 +83,5 @@ int main()
 		}
 	}
 }
+
+
