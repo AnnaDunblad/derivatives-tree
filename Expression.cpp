@@ -33,12 +33,13 @@ std::string Expression::trim(std::string str)
 Node* Expression::toTree(){
   preProcess();
   Node* central = new Node();
-  recursive(central, _str);
+  toTreeInternal(central, _str);
   
   return central;
 }
 
-void Expression::recursive(Node* currNode, std::string currStr)
+// Recursive method to create an tree from a string
+void Expression::toTreeInternal(Node* currNode, std::string currStr)
 { 
   std::cout << currStr << std::endl;
   int pos = getHighestPrecendence(currStr);
@@ -54,8 +55,8 @@ void Expression::recursive(Node* currNode, std::string currStr)
     currNode->setRight(new Node());
     currNode->setLeft(new Node());
 
-    recursive(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
-    recursive(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
+    toTreeInternal(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
+    toTreeInternal(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
   }
 }
 
@@ -122,80 +123,48 @@ int Expression::preProcess()
 int Expression::getHighestPrecendence(std::string str)
 {
   	// Search for the operator with highest precedence. 
-	int numberOfParantesis = 0;
-	int deepness = 0;
+	int numberOfParentheses = 0;
 	int groundest = 255;
 	int groundestPosition = -1;
-	char lastOperador = 0;
 	
 	for(unsigned int i = 0; i < str.length(); ++i) {
 		switch(str[i])
 		{
 			case '(':
-				/*if(lastOperador=='n')
-				{
-					printf("%d: explicit * detected\n", i);
-					deepness++;
-					printf("%d: deepness increased to %d\n", i, deepness);
-				}
-				// If this is the operator with the highest precedence up to now
-				if(deepness < groundest)
-				{
-					groundest = deepness;
-					groundestPosition = i;
-					printf("%d: groundestPosition=%d\n", i, i);
-				}*/
-			        std::cout << i << ": ( detected" << std::endl;
-				numberOfParantesis++;
-				deepness++;
+			        std::cout << i << ":" << 2*numberOfParentheses << " ( detected" << std::endl;
+				numberOfParentheses++;
 				break;
 			case ')':
-			        std::cout << i << ": ) detected" << std::endl;
-				if(numberOfParantesis==0)
-					return -1;
-				numberOfParantesis--;
-				deepness--;
-				lastOperador='*'; // Changed from 'n' 22 May at 4:42, with 'n' I had problems with (d+4)*(a)+4 
+ 			        std::cout << i << ":"<< 2*numberOfParentheses <<" ) detected" << std::endl;
+				if(numberOfParentheses==0)
+				  return -1;
+				numberOfParentheses--;
 				break;
 			case '*':
 			case '/':
-			        std::cout << i << ": */ detected" << std::endl;
-				if(lastOperador=='+')
-				{
-					deepness++;
-					std::cout << i << ": deepness increased to "<< deepness << std::endl;
-				}
+			        std::cout << i << ":" << 2*numberOfParentheses+1  << " */ detected" << std::endl;
+				
 				// If this is the operator with the highest precedence up to now
-				if(deepness < groundest)
+				if(2*numberOfParentheses + 1 < groundest)
 				{
-					groundest = deepness;
+  				        groundest = 2*numberOfParentheses + 1;
 					groundestPosition = i;
-					std::cout << i << ": groundestPosition = "<< i << std::endl;
+					std::cout << i << ":" << 2*numberOfParentheses+1  << " groundestPosition = "<< i << std::endl;
 				}
-				lastOperador = '*';
 				break;
 			case '+':
 			case '-':
-			  std::cout << i << ": +- detected" << std::endl;
-			  
-			        // If this is a new operator
-				if(lastOperador=='*')
-				{
-					deepness--;
-					std::cout << i << ": deepness decreased to " << deepness << std::endl;
-				}
+			        std::cout << i << ":" << 2*numberOfParentheses  << " +- detected" << std::endl;
+				
 				// If this is the operator with the highest precedence up to now
-				if(deepness < groundest)
+				if(2*numberOfParentheses < groundest)
 				{
-					groundest = deepness;
+					groundest = 2*numberOfParentheses;
 					groundestPosition = i;
-					std::cout << i << ": groundestPosition = "<<i<<std::endl;
+					std::cout << i << ":" << 2*numberOfParentheses  << " groundestPosition = "<<i<<std::endl;
 				}
-				lastOperador = '+';
 			default: 
 				// Number (or variable detected)
-				// TODO: Concat if several caracters, i.e.  8132
-				//lastOperador='n';
 				break;
 		}
 	}
@@ -205,20 +174,19 @@ int Expression::getHighestPrecendence(std::string str)
 // Removes a possible spare outer parantesis (this is due to the way I split the expressions at the operator with the highest predence, for example (4+5*3) will split as "(4" and "5*3)" )
 std::string Expression::fixParenthesis(std::string str)
 {
-  int parenthesis = 0;
-  for(unsigned int i = 0; i < str.length(); ++i)
-    {
-      if(str[i] == '(')
-	parenthesis++;
-      else if(str[i] == ')')
-	parenthesis--;
-    }
+  int parentheses = 0;
+  for(unsigned int i = 0; i < str.length(); ++i) {
+    if(str[i] == '(')
+      parentheses++;
+    else if(str[i] == ')')
+      parentheses--;
+  }
   // If we have an extra ) at the end we remove it 
-  if(parenthesis==1 && str[0]=='(')
+  if(parentheses==1 && str[0]=='(')
     str.erase(0,1);
   // If we have an extra ( at the beginning we remove it 
-  else if(parenthesis==-1 && str[str.length()-1] == ')')
+  else if(parentheses==-1 && str[str.length()-1] == ')')
     str.erase(str.length()-1,1);
-   
+  
   return str;
 }

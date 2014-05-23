@@ -1,7 +1,5 @@
 #include <iostream>
 #include <string>
-#include <algorithm>    // std::max
-#include <vector>    // std::vector
 #include "Expression.h"
 
 int main(int argc, char* argv[])
@@ -15,5 +13,5 @@ int main(int argc, char* argv[])
     std::cin >> input;
   }
   Expression exp(input);
-  exp.toTree().printNode();
+  exp.toTree()->printTree();
 }
