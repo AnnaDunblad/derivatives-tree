@@ -3,7 +3,8 @@
 
 Node::Node()
 {
-
+  _leftChildren = NULL;
+  _rightChildren = NULL;
 }
 
 /*bool Node::setData(std::string data)
@@ -34,17 +35,17 @@ bool Node::setOperator(char op){
 }
 
 
-void Node::setRightChildren(Node* node){
+void Node::setRight(Node* node){
   _rightChildren = node;
 }
-void Node::setLeftChildren(Node* node){
+void Node::setLeft(Node* node){
   _leftChildren = node;
 }
 
-Node* Node::getRightChildren(){
+Node* Node::getRight(){
   return _rightChildren;
 }
-Node* Node::getLeftChildren(){
+Node* Node::getLeft(){
   return _leftChildren;
 }
 

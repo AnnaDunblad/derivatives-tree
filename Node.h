@@ -21,10 +21,10 @@ class Node{
   Node(Operator _operator, Node* leftChildren, Node* rightChildren);
   Node(); // Empty constructor that we use when creating three
   //Node getParent();
-  Node* getRightChildren();
-  Node* getLeftChildren();
-  void setRightChildren(Node* node);
-  void setLeftChildren(Node* node);
+  Node* getRight();
+  Node* getLeft();
+  void setRight(Node* node);
+  void setLeft(Node* node);
   bool setOperator(char op);
   bool setOperator(Operator op);
   void setData(std::string data);
