@@ -176,8 +176,8 @@ int Expression::getHighestPrecendence(std::string str)
 			case '+':
 			case '-':
 			  std::cout << i << ": +- detected" << std::endl;
-			  std::cout << lastOperador << deepness << groundest << std::endl;
-				// If this is a new operator
+			  
+			        // If this is a new operator
 				if(lastOperador=='*')
 				{
 					deepness--;
