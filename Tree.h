@@ -5,7 +5,11 @@
 #include "Expression.h"
 
 class Tree{
- 
+ private: 
+  int Tree::maxLvl(Node* node);
+  bool Tree::isAllElementsNull(std::vector<Node*> list);
+  void Tree::printNodeInternal(std::vector<Node*> nodes, int level, int maxLevel);
+
  public: 
     
   // Takes a string expression and convert it to a tree, recursively, returns 1 if successful
@@ -20,6 +24,8 @@ class Tree{
   // Derive this tree, recursive
   void derive();
   
+  // Print this tree
+  void Tree::printNode(Node* root);
 };
 
 #endif
