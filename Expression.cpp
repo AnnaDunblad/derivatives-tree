@@ -154,7 +154,7 @@ int Expression::getHighestPrecendence(std::string str)
 					return -1;
 				numberOfParantesis--;
 				deepness--;
-				lastOperador='n';
+				lastOperador='*'; // Changed from 'n' 22 May at 4:42, with 'n' I had problems with (d+4)*(a)+4 
 				break;
 			case '*':
 			case '/':
@@ -176,6 +176,7 @@ int Expression::getHighestPrecendence(std::string str)
 			case '+':
 			case '-':
 			  std::cout << i << ": +- detected" << std::endl;
+			  std::cout << lastOperador << deepness << groundest << std::endl;
 				// If this is a new operator
 				if(lastOperador=='*')
 				{
