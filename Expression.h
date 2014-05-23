@@ -19,6 +19,6 @@ class Expression
   std::string trim(std::string);
  public:
   Expression(std::string);
-  Node toTree();
+  Node* toTree();
 };
 #endif

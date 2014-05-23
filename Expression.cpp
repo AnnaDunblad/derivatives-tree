@@ -30,10 +30,10 @@ std::string Expression::trim(std::string str)
 }
 
 // Creates an tree from the string
-Node Expression::toTree(){
+Node* Expression::toTree(){
   preProcess();
-  Node central;
-  recursive(&central, _str);
+  Node* central = new Node();
+  recursive(central, _str);
   
   return central;
 }
@@ -49,13 +49,13 @@ void Expression::recursive(Node* currNode, std::string currStr)
     std::cout << "nod satt till: "<< currNode->getData() << std::endl;
   }
   else{
-    currNode->setOperator(currStr[pos]);
+    currNode->setData(std::string(1,currStr[pos])); //TODO: setOperator()
     std::cout << "operand satt till: " << currStr[pos] << std::endl;
-    currNode->setRightChildren(new Node());
-    currNode->setLeftChildren(new Node());
+    currNode->setRight(new Node());
+    currNode->setLeft(new Node());
 
-    recursive(currNode->getLeftChildren(), fixParenthesis(currStr.substr(0,pos)));
-    recursive(currNode->getRightChildren(), fixParenthesis(currStr.substr(pos+1)));
+    recursive(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
+    recursive(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
   }
 }
 
@@ -116,9 +116,6 @@ int Expression::preProcess()
   }
   return 0;
 }
-
-
-
 
 
 int Expression::getHighestPrecendence(std::string str)
