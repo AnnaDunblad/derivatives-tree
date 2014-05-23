@@ -43,7 +43,7 @@ void printNodeInternal(std::vector<Node*> nodes, int level, int maxLevel) {
   int firstSpaces = (1<<floor) - 1;
   int betweenSpaces = (1<<(floor + 1)) - 1;
   
-  std::cout << std::string(firstSpaces,'-');
+  std::cout << std::string(firstSpaces,' ');
 
   std::vector<Node*> newNodes;
   for(std::vector<Node*>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
@@ -54,9 +54,9 @@ void printNodeInternal(std::vector<Node*> nodes, int level, int maxLevel) {
     }else{
       newNodes.push_back(NULL);
       newNodes.push_back(NULL);
-      std::cout << ";";
+      std::cout << " ";
     }
-    std::cout << std::string(betweenSpaces,',');
+    std::cout << std::string(betweenSpaces,' ');
   }
   
 
@@ -66,27 +66,27 @@ void printNodeInternal(std::vector<Node*> nodes, int level, int maxLevel) {
     for (unsigned int j = 0; j < nodes.size(); j++) {
       //std::cout << firstSpaces - i << std::endl;
       if(firstSpaces - i > 0)
-	std::cout << std::string(firstSpaces - i,'.');
+	std::cout << std::string(firstSpaces - i,' ');
 
       if (nodes[j] == NULL) {
-	std::cout << std::string(endgeLines + endgeLines + i + 1,'_');
+	std::cout << std::string(endgeLines + endgeLines + i + 1,' ');
 	continue;
       }
 
       if (nodes[j]->getLeft() != NULL)
 	std::cout << "/";
       else	
-	std::cout << std::string(1,'\'');
+	std::cout << std::string(1,' ');
 
-      std::cout << std::string(i + i - 1,'"');
+      std::cout << std::string(i + i - 1,' ');
 
       if (nodes[j]->getRight() != NULL)
 	std::cout << "\\";
       else
-	std::cout << std::string(1,'^');
+	std::cout << std::string(1,' ');
 
 
-      std::cout << std::string(endgeLines + endgeLines - i,'~');
+      std::cout << std::string(endgeLines + endgeLines - i,' ');
     }
 
     std::cout << std::endl;
