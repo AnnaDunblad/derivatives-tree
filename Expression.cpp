@@ -68,6 +68,7 @@ int Expression::preProcess()
   // 1. Add * between character and paranthesis. 
   // 2. Change c^3 to c*c*c
   // TODO: Add paranthesis around multi character numbers (for example 42) to treat them as one entity. But can have problems with for example 4c. Needs to add a * inbetween them. 
+  // TODO 2: Remove all spaces in the expression, for example (a + b) => (a+b)
   
   char lastCharacter = 0;
   for(unsigned int i = 0; i < _str.length(); ++i) {

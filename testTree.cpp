@@ -101,12 +101,16 @@ void printNodeInternal(std::vector<Node*> nodes, int level, int maxLevel) {
 
 
 
-
-int main()
-{
+int main(int argc, char* argv[])
+{ 
   std::string input;
-  std::cin >> input;
-  
+  if(argc > 1){
+    input = std::string(argv[1]);
+    std::cout << "Expression is: " << input << std::endl;
+  }else{
+    std::cout << "Introduce expression"<<std::endl;
+    std::cin >> input;
+  }
   Expression exp(input);
   printNode(exp.toTree());
 }
