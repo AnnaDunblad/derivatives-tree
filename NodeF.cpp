@@ -77,9 +77,11 @@ int Node::shorten(Node* node){
       node->setLeft(NULL, node);
       break;
     }
+    
+    
+    // Delete the 0 (must be last because we are using this pointer to get right children in changeChild).
+    delete zeroChild;
   }
-  // Delete the 0 (must be last because we are using this pointer to get right children in changeChild).
-  delete zeroChild;
   return 0;
 }
 
