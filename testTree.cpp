@@ -16,5 +16,9 @@ int main(int argc, char* argv[])
     std::cin >> input;
   }
   Expression exp(input);
-  exp.toTree()->printTree();
+  Node* tree;
+  tree = exp.toTree();
+  tree->printTree();
+  tree->shorten();
+  tree->printTree();
 }

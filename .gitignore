@@ -2,3 +2,8 @@
 # Emacs files
 *~
 \#*\#
+
+
+# windows exe file
+*.exe
+*.EXE
