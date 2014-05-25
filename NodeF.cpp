@@ -9,8 +9,6 @@ void Node::shorten(){
 // Returns number of shortened steps
 int Node::shorten(Node* node){
   
-  std::cout << "Is: "<<node <<"Has right: " << node->getRight() << ", left: " << node->getLeft() << std::endl;
-  //std::cout << node->getData() << " is " << node->isNumeric()<<" "<<node->getNumber() << std::endl;
   // Shorten the children first (Note: Since it's a binary tree each node either have both or none children, so just check for one)
   if(node->getRight()){
     
@@ -34,12 +32,10 @@ int Node::shorten(Node* node){
   Node* otherChild = NULL;
   
   if(node->getRight()->getData()=="0"){
-    std::cout<< "Hoger==0:"<<node->getRight()<<std::endl;
     zeroChild = node->getRight();
     otherChild = node->getLeft();
   }
   else if(node->getLeft()->getData() == "0"){
-    std::cout <<"Vanster==0: "<<node->getLeft() << std::endl;
     zeroChild = node->getLeft();
     otherChild = node->getRight();
   }
@@ -55,7 +51,6 @@ int Node::shorten(Node* node){
 	// ... move the other child to this node. 
 	node->getParent()->changeChild(node,otherChild); // Changed 19:14 25 May, from (node,zeroChild) to (node,otherChild) Seems to work!
 	}else*/{ // Commented out 21:45 25 May, because we will (I think) never interchange the children... Just move one of the children up a step to its parent
-	std::cout << "Buh!" <<std::endl;
 	// Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
 	node->setData(otherChild->getData());
 	node->setRight(otherChild->getRight(),node);
@@ -93,23 +88,22 @@ int Node::shorten(Node* node){
 
 
 
-    /*
+    
 
   // If both children are pure numeric we can do the operation, for example 1+2 = 2 and remove the operator 
   }else if(node->getRight()->isNumeric() && node->getLeft()->isNumeric()){
-    std::cout << "Nummber??" << std::endl;
     node->setData(Node::doOperation(node->getLeft()->getNumber(),node->getOperator(),node->getRight()->getNumber()));
     
     delete node->getRight();
     delete node->getLeft();
     node->setRight(NULL, node);
     node->setLeft(NULL, node);
-    */
+    
   }
     
   return 0;
 }
-/*
+
 std::string Node::doOperation(float left, char op, float right)
 {
   float result;
@@ -135,7 +129,7 @@ std::string Node::doOperation(float left, char op, float right)
   o << result;
   return o.str();
 }
-    */
+
 
 // Change the child that pointed to /from/ to /to/
 void Node::changeChild(Node* from, Node* to)

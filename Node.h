@@ -6,7 +6,7 @@
 #include <sstream> // To convert string to integer
 #include <algorithm>    // std::max
 #include <vector>    // std::vector
-
+#include <cmath>     // pow()
 #include "Expression.h"
 class Expression;
 
@@ -29,7 +29,7 @@ class Node{
   char getOperator();
   bool isNumeric();
   float getNumber();
-
+  static std::string doOperation(float,char,float);
  public: 
   //Node(Operator _operator, Node* leftChildren, Node* rightChildren);
   Node(); // Empty constructor that we use when creating three
