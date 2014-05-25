@@ -123,11 +123,83 @@ bool Node::isAllElementsNull(std::vector<Node*> list) {
 
 
   // Derive this tree, recursive
-void derive()
+Node* Node::derive(char variable)
+ {
+  char dataNode=getOperator();
+ Node* node;
+   switch(dataNode)   //test every operator - if number, variable or mult, go to a method
+   {
+	case variable:
+		node->setData('1');
+		break;
+	case '*' :
+		multDerive();
+		break;
+	case  '+':	
+		break;
+	case '-':
+		break;
+	case('n')
+		node->getData();
+		break;
+	default:
+		node->setData('0');
+		break;
+	}
+	
+	if(goRight())
+		node->getRight();
+	else
+		node->getLeft();
+
+ }
+ 
+ bool goRight()
+ {
+	if(getRigh()!=NULL)
+		return true;
+	else 
+		return false;
+ }
+ 
+void multDerive()
 {
+//rule: D(f*g)=f'*g +g'*f
+node->setData('+');
+node->getRight->setData('*');
+node->getLeft->setData('*');
 
 
+//node->getRight()->getRight();
 }
+  /*
+  void Node::setData(std::string data){
+  _data = data;
+}
+std::string Node::getData(){
+  return _data;
+}
+
+void Node::setRight(Node* node){
+  _rightChildren = node;
+}
+void Node::setLeft(Node* node){
+  _leftChildren = node;
+}
+
+Node* Node::getRight(){
+  return _rightChildren;
+}
+Node* Node::getLeft(){
+  return _leftChildren;
+} */
+  
+  
+  
+
+  //go down in tree and change nodes separatly
+  //
+  
 
 
 

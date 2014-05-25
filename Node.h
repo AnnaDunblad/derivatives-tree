@@ -49,8 +49,9 @@ class Node{
   void shorten();
   
   // Derive this tree, recursive
-  Node* derive();
-  
+  Node* derive(char variable);
+  void multDerive();
+  bool goRight();
   
 };
 
