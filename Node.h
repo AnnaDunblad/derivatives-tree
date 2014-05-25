@@ -51,8 +51,9 @@ class Node{
   void shorten();
   
   // Derive this tree, recursive
-  Node* derive(char variable);
-  void multDerive();
+  Node* derive(std::string var);
+  Node* derive(std::string variable, Node* node);
+  void multDerive(Node* node);
   bool goRight();
   
 };

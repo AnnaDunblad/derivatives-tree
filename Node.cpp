@@ -124,53 +124,61 @@ bool Node::isAllElementsNull(std::vector<Node*> list) {
   return true;
 }
 
+Node* Node::derive(std::string var)
+{
+	return derive(var,this);
+}
 
   // Derive this tree, recursive
-Node* Node::derive(char variable)
+Node* Node::derive(std::string variable,Node* node)
  {
-  char dataNode=getOperator();
- Node* node;
-   switch(dataNode)   //test every operator - if number, variable or mult, go to a method
-   {
-	case variable:
-		node->setData('1');
-		break;
-	case '*' :
-		multDerive();
-		break;
-	case  '+':	
-		break;
-	case '-':
-		break;
-	case('n')
-		node->getData();
-		break;
-	default:
-		node->setData('0');
-		break;
-	}
-	
-	if(goRight())
-		node->getRight();
-	else
-		node->getLeft();
+	std::cout<<"Entering switch function"<<std::endl;
+		  char dataNode=getOperator();
+		   switch(dataNode)   //test every operator - if number, variable or mult, go to a method
+		   {
+			case '*' :
+				multDerive(node);
+				break;
+			case  '+':	
+				break;
+			case '-':
+				break;
+			case 'n':
+				node->getData();
+				if(getData()==variable){
+					node->setData("1");
+				}
+				else
+				{
+					node->setData("0");
+				}
+				break;
+			default:
+				node->setData("0");
+				break;
+			}
+		std::cout<<"Switch Sentence Done"<<std::endl;
+		if(node->getRight()!= NULL){
+		derive(variable, node->getRight());
+		std::cout<<"Getting right child"<<std::endl;
+		}
+		if(node->getLeft()!= NULL){
+		derive(variable, node->getLeft());
+		std::cout<<"Getting left child"<<std::endl;
+		}
+		
+
 
  }
  
- bool goRight()
- {
-	if(getRigh()!=NULL)
-		return true;
-	else 
-		return false;
- }
- 
-void multDerive()
+
+
+void Node::multDerive(Node* node)
 {
 //rule: D(f*g)=f'*g +g'*f
-node->setData('+');
-node->getRight->setData('*');
-node->getLeft->setData('*');
+node->setData("+");
+node->getRight()->setData("*");
+node->getLeft()->setData("*");
 
 
 //node->getRight()->getRight();
@@ -198,10 +206,7 @@ Node* Node::getLeft(){
 } */
   
   
-  
-
-  //go down in tree and change nodes separatly
-  //
+ 
   
 
 
