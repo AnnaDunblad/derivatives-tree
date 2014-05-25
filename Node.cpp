@@ -27,11 +27,13 @@ std::string Node::getData(){
 
 void Node::setRight(Node* node, Node* parent){
   _rightChildren = node;
-  setParent(parent);
+  if(node) // node will be NULL when we are copying a node without children to a new node, i.e. this->setRight(other->getRight(),this);
+    _rightChildren->setParent(parent);
 }
 void Node::setLeft(Node* node, Node* parent){
   _leftChildren = node;
-  setParent(parent);
+  if(node) // node will be NULL when we are copying a node without children to a new node, i.e. this->setLeft(other->getLeft(),this);
+    _leftChildren->setParent(parent);
 }
 
 Node* Node::getRight(){
