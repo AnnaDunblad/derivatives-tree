@@ -41,20 +41,19 @@ Node* Expression::toTree(){
 // Recursive method to create an tree from a string
 void Expression::toTreeInternal(Node* currNode, std::string currStr)
 { 
-  std::cout << currStr << std::endl;
   int pos = getHighestPrecedence(currStr);
 
   // the currStr doesn't contain any operator
   if(pos==-1){
     currNode->setData(trim(currStr));
-    std::cout << "nod satt till: "<< currNode->getData() << std::endl;
+    //std::cout << "nod satt till: "<< currNode->getData() << std::endl;
   }
   else{
-    currNode->setData(std::string(1,currStr[pos])); //TODO: setOperator()
-    std::cout << "operand satt till: " << currStr[pos] << std::endl;
+    currNode->setData(std::string(1,currStr[pos]));
+    //std::cout << "operand satt till: " << currStr[pos] << std::endl;
     currNode->setRight(new Node(),currNode);
     currNode->setLeft(new Node(),currNode);
-
+    
     toTreeInternal(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
     toTreeInternal(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
   }
