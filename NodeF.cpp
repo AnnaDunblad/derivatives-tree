@@ -8,6 +8,7 @@ void Node::shorten(){
 
 // Returns number of shortened steps
 int Node::shorten(Node* node){
+  std::cout << node->getData() << " is " << node->isNumeric()<<" "<<node->getNumber() << std::endl;
   // Shorten the children first (Note: Since it's a binary tree each node either have both or none children, so just check for one)
   if(node->getRight()){
     node->getRight()->shorten();
@@ -17,6 +18,7 @@ int Node::shorten(Node* node){
     // If this node doesn't have any children we can't shorten it
     return 0;
   }
+  
   
   // If a child is 0, delete it
   // If this operator is + or -, move the other child to this node. 
@@ -77,11 +79,19 @@ int Node::shorten(Node* node){
       node->setLeft(NULL, node);
       break;
     }
-    
-    
+      
     // Delete the 0 (must be last because we are using this pointer to get right children in changeChild).
     delete zeroChild;
   }
+  
+  
+  
+  // If two children are pure numeric we can do the operation, for example 1+2 = 2 and remove the operator 
+  
+  
+  
+  
+  
   return 0;
 }
 
@@ -120,3 +130,18 @@ char Node::getOperator()
     return '^';
   return 'n';
 }
+
+// returns true if this node contains a number-value
+bool Node::isNumeric()
+{
+  float number;
+  return (std::istringstream(_data) >> number);
+}
+
+float Node::getNumber(){
+  float number;
+  std::istringstream(_data) >> number;
+  return number;
+}
+
+

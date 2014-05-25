@@ -27,6 +27,8 @@ class Node{
   int shorten(Node*);
   void setParent(Node*);
   char getOperator();
+  bool isNumeric();
+  float getNumber();
 
  public: 
   //Node(Operator _operator, Node* leftChildren, Node* rightChildren);
