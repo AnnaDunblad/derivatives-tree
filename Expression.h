@@ -15,7 +15,7 @@ class Expression
   //bool isParenthesis(char);
   bool isNumber(char);
   int preProcess();
-  int getHighestPrecendence(std::string);
+  int getHighestPrecedence(std::string);
   std::string fixParenthesis(std::string);
   void toTreeInternal(Node*, std::string);
   std::string trim(std::string);

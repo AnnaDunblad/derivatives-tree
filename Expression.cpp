@@ -42,7 +42,7 @@ Node* Expression::toTree(){
 void Expression::toTreeInternal(Node* currNode, std::string currStr)
 { 
   std::cout << currStr << std::endl;
-  int pos = getHighestPrecendence(currStr);
+  int pos = getHighestPrecedence(currStr);
 
   // the currStr doesn't contain any operator
   if(pos==-1){
@@ -70,6 +70,8 @@ int Expression::preProcess()
   // 2. Change c^3 to c*c*c
   // TODO: Add paranthesis around multi character numbers (for example 42) to treat them as one entity. But can have problems with for example 4c. Needs to add a * inbetween them. 
   // TODO 2: Remove all spaces in the expression, for example (a + b) => (a+b)
+  // TODO 3: Fix negative exponents, or more complex exponents i.e. (5/4) or (a+b)
+  
   
   char lastCharacter = 0;
   for(unsigned int i = 0; i < _str.length(); ++i) {
@@ -119,26 +121,26 @@ int Expression::preProcess()
   return 0;
 }
 
-
-int Expression::getHighestPrecendence(std::string str)
+                          
+int Expression::getHighestPrecedence(std::string str)
 {
   	// Search for the operator with highest precedence. 
 	int numberOfParentheses = 0;
 	int groundest = 255;
 	int groundestPosition = -1;
 	
-	for(unsigned int i = 0; i < str.length(); ++i) {
+	for(int i = str.length(); i >= 0; --i) {
 		switch(str[i])
 		{
 			case '(':
 			        std::cout << i << ":" << 2*numberOfParentheses << " ( detected" << std::endl;
-				numberOfParentheses++;
+				if(numberOfParentheses==0)
+				  return -1;
+				numberOfParentheses--; // OBS, the loop is in reverse order to make 5/3*4 appear (5/3)*4
 				break;
 			case ')':
  			        std::cout << i << ":"<< 2*numberOfParentheses <<" ) detected" << std::endl;
-				if(numberOfParentheses==0)
-				  return -1;
-				numberOfParentheses--;
+				numberOfParentheses++;
 				break;
 			case '*':
 			case '/':

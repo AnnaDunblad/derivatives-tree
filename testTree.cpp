@@ -2,6 +2,9 @@
 #include <string>
 #include "Expression.h"
 
+// Compile with  g++  -W -Wall -pedantic testTree.cpp Expression.cpp Node.cpp -o sak
+
+
 int main(int argc, char* argv[])
 { 
   std::string input;
