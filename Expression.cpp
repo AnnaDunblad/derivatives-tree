@@ -190,5 +190,5 @@ std::string Expression::fixParenthesis(std::string str)
   else if(parentheses==-1 && str[str.length()-1] == ')')
     str.erase(str.length()-1,1);
   
-  return str;
+  return str; //annas kommentar
 }
