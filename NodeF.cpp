@@ -8,9 +8,12 @@ void Node::shorten(){
 
 // Returns number of shortened steps
 int Node::shorten(Node* node){
-  std::cout << node->getData() << " is " << node->isNumeric()<<" "<<node->getNumber() << std::endl;
+  
+  std::cout << "Is: "<<node <<"Has right: " << node->getRight() << ", left: " << node->getLeft() << std::endl;
+  //std::cout << node->getData() << " is " << node->isNumeric()<<" "<<node->getNumber() << std::endl;
   // Shorten the children first (Note: Since it's a binary tree each node either have both or none children, so just check for one)
   if(node->getRight()){
+    
     node->getRight()->shorten();
     node->getLeft()->shorten();
   }
@@ -31,10 +34,12 @@ int Node::shorten(Node* node){
   Node* otherChild = NULL;
   
   if(node->getRight()->getData()=="0"){
+    std::cout<< "Hoger==0:"<<node->getRight()<<std::endl;
     zeroChild = node->getRight();
     otherChild = node->getLeft();
   }
   else if(node->getLeft()->getData() == "0"){
+    std::cout <<"Vanster==0: "<<node->getLeft() << std::endl;
     zeroChild = node->getLeft();
     otherChild = node->getRight();
   }
@@ -45,10 +50,12 @@ int Node::shorten(Node* node){
     case '+':
     case '-':
       // If this node has an parent (isn't the ancestor too everyone)
-      if(node->getParent()){
+      /*if(node->getParent()){
+	std::cout << "Byter bort " << node->getData() << " till " << otherChild->getData() << " i " << node->getParent()->getData() << std::endl;
 	// ... move the other child to this node. 
 	node->getParent()->changeChild(node,otherChild); // Changed 19:14 25 May, from (node,zeroChild) to (node,otherChild) Seems to work!
-      }else{
+	}else*/{ // Commented out 21:45 25 May, because we will (I think) never interchange the children... Just move one of the children up a step to its parent
+	std::cout << "Buh!" <<std::endl;
 	// Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
 	node->setData(otherChild->getData());
 	node->setRight(otherChild->getRight(),node);
@@ -82,22 +89,58 @@ int Node::shorten(Node* node){
       
     // Delete the 0 (must be last because we are using this pointer to get right children in changeChild).
     delete zeroChild;
+
+
+
+
+    /*
+
+  // If both children are pure numeric we can do the operation, for example 1+2 = 2 and remove the operator 
+  }else if(node->getRight()->isNumeric() && node->getLeft()->isNumeric()){
+    std::cout << "Nummber??" << std::endl;
+    node->setData(Node::doOperation(node->getLeft()->getNumber(),node->getOperator(),node->getRight()->getNumber()));
+    
+    delete node->getRight();
+    delete node->getLeft();
+    node->setRight(NULL, node);
+    node->setLeft(NULL, node);
+    */
   }
-  
-  
-  
-  // If two children are pure numeric we can do the operation, for example 1+2 = 2 and remove the operator 
-  
-  
-  
-  
-  
+    
   return 0;
 }
+/*
+std::string Node::doOperation(float left, char op, float right)
+{
+  float result;
+  switch(op){
+  case '+':
+    result = left + right;
+    break;
+  case '-':
+    result = left - right;
+    break;
+  case '*':
+    result = left * right;
+    break;
+  case '/':
+    result = left / right;
+    break;
+  case '^':
+    result = pow(left, right);
+    break;
+  }
+
+  std::ostringstream o;    
+  o << result;
+  return o.str();
+}
+    */
 
 // Change the child that pointed to /from/ to /to/
 void Node::changeChild(Node* from, Node* to)
 {
+  std::cout << "from: "<<from<<", to: "<<to<<std::endl;
   if(getLeft()==from)
     setLeft(to,this);
   else if(getRight()==from)
