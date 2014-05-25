@@ -17,15 +17,16 @@ class Node{
  private: 
   Node* _rightChildren;
   Node* _leftChildren;
-  //Node _parent;
+  Node* _parent;
   //Operator _operator;
   std::string _data; // If _operator is NUM we keep the number in _data
 
   int maxLevel(Node* node);
   bool isAllElementsNull(std::vector<Node*>);
   void printTreeInternal(std::vector<Node*>, int, int);
-  void shorten(Node*);
+  int shorten(Node*);
   void setParent(Node*);
+  char getOperator();
 
  public: 
   //Node(Operator _operator, Node* leftChildren, Node* rightChildren);
@@ -34,8 +35,8 @@ class Node{
   Node* getParent();
   Node* getRight();
   Node* getLeft();
-  void setRight(Node*);
-  void setLeft(Node*);
+  void setRight(Node*, Node*);
+  void setLeft(Node*, Node*);
   //bool setOperator(char);
   //bool setOperator(Operator);
   void setData(std::string);
