@@ -25,19 +25,26 @@ int Node::shorten(Node* node){
     zeroChild = node->getLeft();
     otherChild = node->getRight();
   }
-  
   // If a child is 0
   if(zeroChild){
-    // Delete the 0
-    delete zeroChild;
-    
-    
     switch(node->getOperator()){
     // If this operator is + or - ...
     case '+':
     case '-':
-      // ... move the other child to this node. 
-      node->getParent()->changeChild(node,zeroChild);
+      // If this node has an parent (isn't the ancestor too everyone)
+      if(node->getParent()){
+	// ... move the other child to this node. 
+	node->getParent()->changeChild(node,zeroChild);
+      }else{
+	// Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
+	node->setData(otherChild->getData());
+	node->setRight(otherChild->getRight(),node);
+	node->setLeft(otherChild->getLeft(),node);
+
+	// Delete the other node
+	delete otherChild;
+      }
+
       break;
     case '/':
       if(zeroChild==node->getRight()){
@@ -60,8 +67,9 @@ int Node::shorten(Node* node){
       break;
     }
   }
-  
-  
+
+  // Delete the 0 (must be last because we are using this pointer to get right children in changeChild).
+  delete zeroChild;
   
   return 0;
 }
@@ -74,7 +82,7 @@ void Node::changeChild(Node* from, Node* to)
   else if(getRight()==from)
     setRight(to,this);
   else
-    std::cout << "ERROR in changeChild, from="<<from->getData()<<", to="<<to->getData()<<", this="<<getData()<<std::endl;
+    std::cout << "ERROR in changeChild, from=" << from->getData() << ", to=" << to->getData() << ", this=" << getData() << std::endl;
 }
 
 Node* Node::getParent()
