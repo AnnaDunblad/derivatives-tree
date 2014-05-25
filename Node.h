@@ -22,22 +22,23 @@ class Node{
   std::string _data; // If _operator is NUM we keep the number in _data
 
   int maxLevel(Node* node);
-  bool isAllElementsNull(std::vector<Node*> list);
-  void printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel);
- 
-
+  bool isAllElementsNull(std::vector<Node*>);
+  void printTreeInternal(std::vector<Node*>, int, int);
+  void shorten(Node*);
+  void setParent(Node*);
 
  public: 
   //Node(Operator _operator, Node* leftChildren, Node* rightChildren);
   Node(); // Empty constructor that we use when creating three
-  //Node getParent();
+  void changeChild(Node*, Node*);
+  Node* getParent();
   Node* getRight();
   Node* getLeft();
-  void setRight(Node* node);
-  void setLeft(Node* node);
-  //bool setOperator(char op);
-  //bool setOperator(Operator op);
-  void setData(std::string data);
+  void setRight(Node*);
+  void setLeft(Node*);
+  //bool setOperator(char);
+  //bool setOperator(Operator);
+  void setData(std::string);
   std::string getData();
   
   // Return a printable representation of this tree
