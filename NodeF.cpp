@@ -3,6 +3,7 @@
 
 // Shorten the expression tree from this node (remove zeroes, remove outermost parenthesis,
 void Node::shorten(){
+  // TODO:  Sometimes we need to shorten the tree several times 
   shorten(this);
 }
 
@@ -87,7 +88,7 @@ int Node::shorten(Node* node){
 
 
 
-
+    return 1;
     
 
   // If both children are pure numeric we can do the operation, for example 1+2 = 2 and remove the operator 
@@ -99,7 +100,41 @@ int Node::shorten(Node* node){
     node->setRight(NULL, node);
     node->setLeft(NULL, node);
     
+    return 1;
+
+
+  // Short a/1 and a*1 to a     
+  }else if(node->getRight()->getData()=="1" && (node->getOperator()=='*' || node->getOperator()=='/')){
+    
+    delete node->getRight();
+    Node* tmp = node->getLeft(); // Need to access getLeft() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
+    
+    node->setData(node->getLeft()->getData());
+    node->setRight(node->getLeft()->getRight(), node);
+    node->setLeft(node->getLeft()->getLeft(), node);
+    
+    delete tmp;
+    
+    return 1; 
+    
+  // Short 1*a to a
+  }else if(node->getLeft()->getData()=="1" && node->getOperator()=='*'){
+    
+    delete node->getLeft();    
+    Node* tmp = node->getRight(); // Need to access getRight() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
+    
+    node->setData(node->getRight()->getData());
+    node->setRight(node->getRight()->getRight(), node);
+    node->setLeft(node->getRight()->getLeft(), node);
+    
+    delete tmp;
+    
+    return 1; 
   }
+
+
+
+
     
   return 0;
 }
