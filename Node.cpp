@@ -24,17 +24,6 @@ std::string Node::getData(){
 }
 
 
-bool Node::setOperator(char op){
-  switch(op)
-    {
-    case '+':
-      return true;
-      // TODO: Implement!
-    }
-  return false;
-}
-
-
 void Node::setRight(Node* node){
   _rightChildren = node;
 }
@@ -130,6 +119,14 @@ bool Node::isAllElementsNull(std::vector<Node*> list) {
       return false;
   }
   return true;
+}
+
+
+  // Derive this tree, recursive
+void derive()
+{
+
+
 }
 
 

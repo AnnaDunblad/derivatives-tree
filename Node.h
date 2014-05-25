@@ -10,12 +10,6 @@
 #include "Expression.h"
 class Expression;
 
-// Operators in precedence order
-enum Operator{
-  MULT, DIV, ADD, SUB, NUM
-};
-
-
 
 // Class representing a binary tree
 class Node{
@@ -24,7 +18,7 @@ class Node{
   Node* _rightChildren;
   Node* _leftChildren;
   //Node _parent;
-  Operator _operator;
+  //Operator _operator;
   std::string _data; // If _operator is NUM we keep the number in _data
 
   int maxLevel(Node* node);
@@ -41,8 +35,8 @@ class Node{
   Node* getLeft();
   void setRight(Node* node);
   void setLeft(Node* node);
-  bool setOperator(char op);
-  bool setOperator(Operator op);
+  //bool setOperator(char op);
+  //bool setOperator(Operator op);
   void setData(std::string data);
   std::string getData();
   
@@ -55,7 +49,7 @@ class Node{
   void shorten();
   
   // Derive this tree, recursive
-  void derive();
+  Node* derive();
   
   
 };
