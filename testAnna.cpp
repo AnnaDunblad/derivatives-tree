@@ -8,9 +8,10 @@ int main()
 
 	std::cout<< "introduce expression"<<std::endl;
 	std::cin>> input;
-	char variable = 'x';
+	std::string variable = "x";
 
 	Expression exp(input);
+	
 	exp.toTree()->derive(variable)->printTree();
 	
 

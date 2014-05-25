@@ -27,13 +27,11 @@ std::string Node::getData(){
 
 void Node::setRight(Node* node, Node* parent){
   _rightChildren = node;
-  if(node) // node will be NULL when we are copying a node without children to a new node, i.e. this->setRight(other->getRight(),this);
-    _rightChildren->setParent(parent);
+  setParent(parent);
 }
 void Node::setLeft(Node* node, Node* parent){
   _leftChildren = node;
-  if(node) // node will be NULL when we are copying a node without children to a new node, i.e. this->setLeft(other->getLeft(),this);
-    _leftChildren->setParent(parent);
+  setParent(parent);
 }
 
 Node* Node::getRight(){
@@ -126,57 +124,90 @@ bool Node::isAllElementsNull(std::vector<Node*> list) {
   return true;
 }
 
+Node* Node::derive(std::string var)
+{
+	return derive(var,this);
+}
 
   // Derive this tree, recursive
-Node* Node::derive(char variable)
+Node* Node::derive(std::string variable,Node* node)
  {
-  char dataNode=getOperator();
- Node* node;
-   switch(dataNode)   //test every operator - if number, variable or mult, go to a method
-   {
-	case variable:
-		node->setData('1');
-		break;
-	case '*' :
-		multDerive();
-		break;
-	case  '+':	
-		break;
-	case '-':
-		break;
-	case('n')
-		node->getData();
-		break;
-	default:
-		node->setData('0');
-		break;
-	}
-	
-	if(goRight())
-		node->getRight();
-	else
-		node->getLeft();
+	std::cout<<"Entering switch function"<<std::endl;
+	std::cout<<"Node Data="<<node->getData() << std::endl;
+		  char dataNode=node->getOperator();
+		   switch(dataNode)   //test every operator - if number, variable or mult, go to a method
+		   {
+			case '*' :
+				/*if(node->getRight()==0 && || getLeft()==0!)
+				
+				else
+				multDerive(variable,node);*/
+				break;
+			case '/':
+				//divDerive(variable,node);
+				break;	
+			case  '+':	
+				break;
+			case '-':
+				break;
+			case 'n':
+				if(node->getData()==variable){
+					node->setData("1");
+				}
+				else
+				{
+					node->setData("0");
+				}
+				break;
+			default:
+				node->setData("0");
+				break;
+			}
+		std::cout<<"Switch Sentence Done"<<std::endl;
+		if(node->getRight()!= NULL){
+			std::cout<<"Getting right child"<<std::endl;
+			derive(variable,node->getRight());
 
+		}
+		if(node->getLeft()!= NULL){
+			std::cout<<"Getting left child"<<std::endl;
+			derive(variable, node->getLeft());
+
+		}
+		if(node->getLeft()== NULL&& node->getRight()== NULL) 
+			std::cout<< "End of tree"<< std::endl;
+
+return node;
  }
  
- bool goRight()
- {
-	if(getRigh()!=NULL)
-		return true;
-	else 
-		return false;
- }
- 
-void multDerive()
+Node* Node::copyNode(Node* node)
 {
-//rule: D(f*g)=f'*g +g'*f
-node->setData('+');
-node->getRight->setData('*');
-node->getLeft->setData('*');
+	std::cout<<"Entering copyNode function"<<std::endl;
+	Node* newNode;
+	newNode->setData(node->getData());
 
-
-//node->getRight()->getRight();
+return newNode;
 }
+/*
+void Node::multDerive(std::string var,Node* node)
+{
+		std::cout<<"Entering multDerive function"<<std::endl;
+	//rule: D(f*g)=f'*g +g'*f
+	//node->getLeft()->getLeft()->copyNode(node->getLeft());
+	//node->getRight()->getRight()->copyNode(node->getRight());
+	//node->getLeft()->setRight(derive(var,node->getRight())))
+	//node->getRight()->setLeft(derive(var,node->getRight()));
+	node->setData("+");
+	//node->getRight()->setData("*");
+	//node->getLeft()->setData("*");
+	std::cout<<"putting first node in mult to +"<<std::endl;
+}
+/*
+ void Node::divDerive(std::string var, Node* node); 
+ {
+ 
+ 
+ }
   /*
   void Node::setData(std::string data){
   _data = data;
@@ -200,10 +231,7 @@ Node* Node::getLeft(){
 } */
   
   
-  
-
-  //go down in tree and change nodes separatly
-  //
+ 
   
 
 
