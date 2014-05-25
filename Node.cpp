@@ -1,10 +1,11 @@
 #include "Node.h"
 
-
+// Create a new floating node
 Node::Node()
 {
   _leftChildren = NULL;
   _rightChildren = NULL;
+  _parent = NULL;
 }
 
 /*bool Node::setData(std::string data)
@@ -24,11 +25,13 @@ std::string Node::getData(){
 }
 
 
-void Node::setRight(Node* node){
+void Node::setRight(Node* node, Node* parent){
   _rightChildren = node;
+  setParent(parent);
 }
-void Node::setLeft(Node* node){
+void Node::setLeft(Node* node, Node* parent){
   _leftChildren = node;
+  setParent(parent);
 }
 
 Node* Node::getRight(){

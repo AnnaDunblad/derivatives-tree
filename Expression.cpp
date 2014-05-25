@@ -52,13 +52,22 @@ void Expression::toTreeInternal(Node* currNode, std::string currStr)
   else{
     currNode->setData(std::string(1,currStr[pos])); //TODO: setOperator()
     std::cout << "operand satt till: " << currStr[pos] << std::endl;
-    currNode->setRight(new Node());
-    currNode->setLeft(new Node());
+    currNode->setRight(new Node(),currNode);
+    currNode->setLeft(new Node(),currNode);
 
     toTreeInternal(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
     toTreeInternal(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
   }
 }
+
+// Check string for errors
+//int Expression::checkError()
+//{
+  // The string can only contain "0-9, a-z, ()"
+  // Every opened ( needs to have a corresponding )
+  
+  // TODO: Implement, until later we assume every input is correct
+//}
 
 
 // Prepare the string before we split it in parts
@@ -88,7 +97,7 @@ int Expression::preProcess()
     //}
     
     // 2. Fix powers
-    if(_str[i] == '^'){
+    /*if(_str[i] == '^'){
       // Does next character exists? It has to do for it to be an correct expression, in addition the exponent has to be a number (limited to 0-9)
       if(i+1==_str.length() || i==0 || !isNumber(_str[i+1]))
 	return -1;
@@ -113,7 +122,7 @@ int Expression::preProcess()
       }
       // Remove the ^5 part of the string
       _str.erase(i,2);
-    }
+      }*/
     
     // Update last character
     lastCharacter = _str[i];
