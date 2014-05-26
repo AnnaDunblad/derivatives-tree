@@ -11,12 +11,10 @@ void Node::shorten(){
 int Node::shorten(Node* node){
   
   // Shorten the children first (Note: Since it's a binary tree each node either have both or none children, so just check for one)
-  if(node->getRight()){
-    
+  if(node->getRight()){ 
     node->getRight()->shorten();
     node->getLeft()->shorten();
-  }
-  else{
+  }else{
     // If this node doesn't have any children we can't shorten it
     return 0;
   }
@@ -40,61 +38,10 @@ int Node::shorten(Node* node){
     zeroChild = node->getLeft();
     otherChild = node->getRight();
   }
-  // If a child is 0
-  if(zeroChild){
-    switch(node->getOperator()){
-    // If this operator is + or - ...
-    case '-'://  Special case with (0-b), because we shoudn't short it (0-b != b)
-      if(zeroChild==node->getLeft())
-	return 1;// return instead of break because we don't want to delete the zeroChild after the switch
-    case '+':
-      // If this node has an parent (isn't the ancestor too everyone)
-      /*if(node->getParent()){
-	std::cout << "Byter bort " << node->getData() << " till " << otherChild->getData() << " i " << node->getParent()->getData() << std::endl;
-	// ... move the other child to this node. 
-	node->getParent()->changeChild(node,otherChild); // Changed 19:14 25 May, from (node,zeroChild) to (node,otherChild) Seems to work!
-	}else*/{ // Commented out 21:45 25 May, because we will (I think) never interchange the children... Just move one of the children up a step to its parent
-	// Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
-	node->setData(otherChild->getData());
-	node->setRight(otherChild->getRight(),node);
-	node->setLeft(otherChild->getLeft(),node);
-	// Delete the other node
-	delete otherChild;
-      }
-      break;
-    case '/':
-      if(zeroChild==node->getRight()){
-	std::cout << "ERROR Division by zero" << std::endl;
-	return -1;
-      }
-      // NOTE: Fall through! (the same behaviour as *)
-    case '^':
-      if(zeroChild==node->getRight()){
-	node->setData("1");
-	delete otherChild;
-	break;
-      }
-      // NOTE: Fall through! If the base was 0, same behaviour as *
-    // If the operator is * ...
-    case '*':
-      // ... remove the other child as well
-      delete otherChild;
-      node->setData("0");
-      node->setRight(NULL, node);
-      node->setLeft(NULL, node);
-      break;
-    }
-      
-    // Delete the 0 (must be last because we are using this pointer to get right children in changeChild).
-    delete zeroChild;
-
-
-
-    return 1;
-    
-
+  
+  
   // If both children are pure numeric we can do the operation, for example 1+2 = 2 and remove the operator 
-  }else if(node->getRight()->isNumeric() && node->getLeft()->isNumeric()){
+  if(node->getRight()->isNumeric() && node->getLeft()->isNumeric()){
     node->setData(Node::doOperation(node->getLeft()->getNumber(),node->getOperator(),node->getRight()->getNumber()));
     
     delete node->getRight();
@@ -103,8 +50,8 @@ int Node::shorten(Node* node){
     node->setLeft(NULL, node);
     
     return 1;
-
-
+    
+    
   // Short a/1 and a*1 to a     
   }else if(node->getRight()->getData()=="1" && (node->getOperator()=='*' || node->getOperator()=='/')){
     
@@ -132,12 +79,60 @@ int Node::shorten(Node* node){
     delete tmp;
     
     return 1; 
-  }
 
 
 
 
+
+  // If a child is 0
+ }else if(zeroChild){
+    switch(node->getOperator()){
+    // If this operator is + or - ...
+    case '-'://  Special case with (0-b), because we shoudn't short it (0-b != b)
+      if(zeroChild==node->getLeft()){
+	return 0; // Use return instead of break because we don't want to remove the zeroChild after the switch 	
+      }
+    case '+':
+      // If this node has an parent (isn't the ancestor too everyone)
+      /*if(node->getParent()){
+	std::cout << "Byter bort " << node->getData() << " till " << otherChild->getData() << " i " << node->getParent()->getData() << std::endl;
+	// ... move the other child to this node. 
+	node->getParent()->changeChild(node,otherChild); // Changed 19:14 25 May, from (node,zeroChild) to (node,otherChild) Seems to work!
+	}else*/{ // Commented out 21:45 25 May, because we will (I think) never interchange the children... Just move one of the children up a step to its parent
+	// Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
+	node->setData(otherChild->getData());
+	node->setRight(otherChild->getRight(),node);
+	node->setLeft(otherChild->getLeft(),node);
+	// Delete the other node
+	delete otherChild;
+      }
+      break;
+    case '/':
+      if(zeroChild==node->getRight())
+	throw std::overflow_error("Divide by zero exception");
+      // NOTE: Fall through! (the same behaviour as *)
+    case '^':
+      if(zeroChild==node->getRight()){
+	node->setData("1");
+	delete otherChild;
+	break;
+      }
+      // NOTE: Fall through! If the base was 0, same behaviour as *
+    // If the operator is * ...
+    case '*':
+      // ... remove the other child as well
+      delete otherChild;
+      node->setData("0");
+      node->setRight(NULL, node);
+      node->setLeft(NULL, node);
+      break;
+    }
     
+    // Delete the 0 (must be last because we are using this pointer to get right children in changeChild).
+    delete zeroChild; 
+    return 1;
+  } 
+  
   return 0;
 }
 
