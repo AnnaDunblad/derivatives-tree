@@ -6,7 +6,7 @@ Node::Node()
   _leftChildren = NULL;
   _rightChildren = NULL;
   _parent = NULL;
-  multDone=false;
+ leftChildDoneVar=false;	
 }
 
 /*bool Node::setData(std::string data)
@@ -127,144 +127,165 @@ bool Node::isAllElementsNull(std::vector<Node*> list) {
 
 Node* Node::derive(std::string var)
 {
-	return derive(var,this);
+	Node* newNode=new Node();
+	
+	return derive(var,this,newNode);
 }
 
   // Derive this tree, recursive
-Node* Node::derive(std::string variable,Node* node)
- {		  
-		 Node* topNode=node;
+Node* Node::derive(std::string variable,Node* node, Node* newNode )
+ {		 
 		char dataNode=node->getOperator();
+		std::cout<<"node->getData()="<<node->getData()<<std::endl;
+
 
 		   switch(dataNode)   //test every operator - if number, variable or mult, go to a method
 		   {
 			case '*' :
-					node=multDerive(variable,node);		
+				if(node->getRight()->getData()== "0" || node->getRight()->getData()=="0")
+					{
+					
+					std::cout<<"0 in child node to * detected"<<std::endl;
+					newNode->setData("+");
+					newNode->setRight((new Node()),newNode);
+					newNode->getRight()->setData("0");
+					newNode->setLeft((new Node()),newNode);
+					newNode->getLeft()->setData("0");
+					}	
+					else
+					{
+					std::cout<<" * detected, going to multDer"<<std::endl;
+					multDerive(variable,node,newNode);
+					}	
 				break;
 			case '/':
 				//divDerive(variable,node);
 				break;	
 			case  '+':	
+				std::cout<<" + detected"<<std::endl;
+				addDerive(variable,node, newNode);
 				break;
 			case '-':
+				std::cout<<" - detected"<<std::endl;
+				newNode->setData("-");
+				subDerive(variable,node, newNode);
 				break;
 			case 'n':
 				if(node->getData()==variable){
-					node->setData("1");
+					std::cout<<" variable detected"<<std::endl;
+					newNode->setData("1");
 				}
 				else
 				{
-					node->setData("0");
+					std::cout<<" number detected"<<std::endl;
+					newNode->setData("0");
 				}
 				break;
 			default:
-				node->setData("0");
+				newNode->setData("0");
 				break;
 			}
-
-		if(node->getRight()!= NULL && node->getRight()->getData()!="0"){
-			std::cout<<"Getting right child"<<std::endl;
-			derive(variable,node->getRight());
-
-		}
-		if(node->getLeft()!= NULL && node->getLeft()->getData()!="0"){
-			std::cout<<"Getting left child"<<std::endl;
-			derive(variable, node->getLeft());
-
-		}
-		if(node->getLeft()== NULL && node->getRight()== NULL)
-			std::cout<< "End of tree"<< std::endl;
-
-return topNode;
+	
+return newNode;;
+ }
+ void Node::leftChildDone()
+ {
+  leftChildDoneVar=true;
  }
  
-Node* Node::copyNode(Node* node)
-{
-	Node* newNode = new Node();
-	newNode->setData(node->getData());
-return newNode;
-}
-
+ 
 Node* Node::copyNodeTree(Node* node)
 {
 	Node* newNode=new Node();
-	while(node->getRight()!=NULL && node->getRight()!=NULL)
+	newNode->setData(node->getData()); //copy first node
+	if(node->getRight()!=NULL && node->getRight()!=NULL)
 	{
-		newNode->setData(node->getData()); //copy first node
 		newNode->setRight(node->getRight(),newNode);
 		newNode->setLeft(node->getLeft(),newNode);
 		copyNodeTree(node->getLeft());
 		copyNodeTree(node->getRight());
 	}
-
 return newNode;
 }
+void Node::addDerive(std::string var,Node* node, Node* newNode)
+{
+	
+	std::cout<<"Entering addDerive function"<<std::endl;
+	//Copying the values of right and left child node to save for later use 
+	 Node* rightTree = copyNodeTree(node->getRight()); 	 
+	 Node* leftTree = copyNodeTree(node->getLeft());
+	 
+	//creating new tree
+	newNode->setData("+");
+	newNode->setRight(new Node(),newNode);
+	newNode->setLeft(new Node(),newNode);
+ 	newNode->setLeft(derive(var,leftTree,newNode->getLeft()),newNode); //putting the left child node to the derived value
+	newNode->setRight(derive(var,rightTree,newNode->getRight()),newNode); //putting the right child node to the derived value
 
-Node* Node::multDerive(std::string var,Node* node) 	//rule: D(f*g)=f'*g +g'*f
+}
+void Node::subDerive(std::string var,Node* node, Node* newNode)
+{
+	std::cout<<"Entering subDerive function"<<std::endl;
+	//Copying the values of right and left child node to save for later use 
+	 Node* rightTree = copyNodeTree(node->getRight()); 	 
+	 Node* leftTree = copyNodeTree(node->getLeft());
+	 
+	//creating new tree
+	newNode->setData("-");
+	newNode->setRight(new Node(),newNode);
+	newNode->setLeft(new Node(),newNode);
+ 	newNode->setLeft(derive(var,leftTree,newNode->getLeft()),newNode); //putting the left-right child node to the derived value
+	newNode->setRight(derive(var,rightTree,newNode->getRight()),newNode); //putting the left-right child node to the derived value
+
+}
+void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)=f'*g +g'*f
 { 
 	std::cout<<"Entering multDerive function"<<std::endl;
 	std::cout<<"node->getRight()->getData()="<<node->getRight()->getData() <<std::endl;
 	std::cout<<"node->getLeft()->getData()="<<node->getLeft()->getData() <<std::endl;
 
-	Node* RRnode;
-	Node* LLnode;
-	if(node->getRight()->getOperator() == 'n' && node->getLeft()->getOperator() ) {
-		 RRnode = copyNode(node->getRight()); 	//Copying the values of right and left child node to save for later use  
-		 LLnode = copyNode(node->getLeft());
-	}
-	else
-	{
-		if(node->getRight()->getData()!="0")
-		{
-			std::cout<<"Getting right child in derive from  mult"<<std::endl;
-			RRnode=derive(var,node->getRight());
-		}
-		if(node->getLeft()->getData()!="0")
-		{
-			std::cout<<"Getting left child from mult"<<std::endl;
-			derive(var, node->getLeft());
-		}
-	}
+	 Node* rightTree = copyNodeTree(node->getRight()); 	//Copying the values of right and left child node to save for later use  
+	 Node* leftTree = copyNodeTree(node->getLeft());
+	 
+	//creating new tree
+	
+	newNode->setRight(new Node(),newNode);
+	newNode->setLeft(new Node(),newNode);
+	newNode->getLeft()->setLeft(new Node(),newNode->getLeft());
+	newNode->getLeft()->setRight(new Node(),newNode->getLeft());
+	newNode->getRight()->setLeft(new Node(),newNode->getRight());
+	newNode->getRight()->setRight(new Node(),newNode->getRight());
 	
 	
 	
-	node->getLeft()->setLeft(LLnode,node->getLeft()); //put left-left child node to copied value (the one not derivated)
-	node->getRight()->setRight(RRnode,node->getRight()); //put right-right child node to copied value (the one not derivated)
+	newNode->getLeft()->setLeft(leftTree,newNode->getLeft());   //put left-left child tree to copied tree (the one not derivated)
+ 	newNode->getRight()->setLeft(derive(var,leftTree,newNode->getRight()->getLeft()),newNode->getRight()); //putting the left-right child node to the derived value
+	newNode->getLeft()->setRight(derive(var,rightTree,newNode->getLeft()->getRight()),newNode->getLeft()); //putting the left-right child node to the derived value
+	newNode->getRight()->setRight(rightTree,newNode->getRight()); //put right-right child tree to copied tree (the one not derivated)
 	
-		std::cout<<"RR="<<RRnode->getData() <<std::endl;
-		std::cout<<"LL="<<LLnode->getData() <<std::endl;
+	
+	std::cout<<"leftTree->getData()="<<leftTree->getData()<<std::endl;
+	std::cout<<"rightTree->getData()="<<rightTree->getData() <<std::endl;
 
 	//putting the parent node to + and the right and left children to * 
-	node->setData("+");
-	node->getRight()->setData("*");
-	node->getLeft()->setData("*");
-
-	//starting deriving and asignation of Left-Right child node
-	Node* LRnode= new Node(); LRnode->setData(RRnode->getData()); //create new node with the value to be derivated taken from the value saved in right-right node
-	node->getLeft()->setRight(LRnode,node->getLeft()); 
-    std::string resultLR= derive(var,LRnode)->getData();
-	LRnode->setData(resultLR); //putting the left-right child node to the derived value
-
-	//starting deriving and asignation of Right-Left child node	
-	Node* RLnode= new Node(); RLnode->setData(LLnode->getData()); //create new node with the value to be derivated taken from the value saved in left-left node
-	node->getRight()->setLeft(RLnode,node->getRight()); 
-    std::string resultRL= derive(var,RLnode)->getData();
-	RLnode->setData(resultRL); //putting the right-left child node to the derived value
-	
-		std::cout<<"RR="<<RRnode->getData() <<std::endl;
-		std::cout<<"RL="<<RLnode->getData() <<std::endl;
-		std::cout<<"LL="<<LLnode->getData() <<std::endl;
-		std::cout<<"LR="<<LRnode->getData() <<std::endl;
+	newNode->setData("+");
+	newNode->getRight()->setData("*");
+	newNode->getLeft()->setData("*");
 	
 	
-return RRnode; 
+	
+	//starting deriving  right-left child tree
 
+
+ 	newNode->getRight()->setLeft(derive(var,leftTree,newNode->getRight()->getLeft()),newNode->getRight()); //putting the left-right child node to the derived value
+
+	//starting deriving  left-right child tree
+
+	newNode->getLeft()->setRight(derive(var,rightTree,newNode->getLeft()->getRight()),newNode->getLeft()); //putting the left-right child node to the derived value
+	
+	std::cout<<"newNode->getLeft()->getLeft()="<<newNode->getLeft()->getLeft()->getData() <<std::endl;
+	std::cout<<"newNode->getLeft()->getRight()="<<newNode->getLeft()->getRight()->getData() <<std::endl;
+	std::cout<<"newNode->getRight()->getLeft()="<<newNode->getRight()->getLeft()->getData() <<std::endl;
+	std::cout<<"newNode->getRight()->getRight()="<<newNode->getRight()->getRight()->getData() <<std::endl;
+	
 }
-
-  
- 
-  
-
-
-
-
