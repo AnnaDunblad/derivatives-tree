@@ -44,8 +44,10 @@ int Node::shorten(Node* node){
   if(zeroChild){
     switch(node->getOperator()){
     // If this operator is + or - ...
+    case '-'://  Special case with (0-b), because we shoudn't short it (0-b != b)
+      if(zeroChild==node->getLeft())
+	return 1;// return instead of break because we don't want to delete the zeroChild after the switch
     case '+':
-    case '-':
       // If this node has an parent (isn't the ancestor too everyone)
       /*if(node->getParent()){
 	std::cout << "Byter bort " << node->getData() << " till " << otherChild->getData() << " i " << node->getParent()->getData() << std::endl;
