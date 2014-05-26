@@ -59,7 +59,7 @@ class Node{
 	Node* derive(std::string var);   //overload method to return result of derive
 	Node* derive(std::string variable, Node* node, Node* newNode); //recursive derive
 	void multDerive(std::string var, Node* node, Node* newNode); //derive mutiplication
-	// void divDerive(std::string var, Node* node); //derive divisions
+	void divDerive(std::string var,Node* node, Node* newNode); //derive divisions
 	void addDerive(std::string var, Node* node, Node* newNode);
 	void subDerive(std::string var, Node* node, Node* newNode);
 
