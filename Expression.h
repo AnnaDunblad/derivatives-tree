@@ -32,6 +32,6 @@ class Expression
   Expression(std::string);
   Node* toTree();
   bool checkError();
-  
+  std::string toString();
 };
 #endif

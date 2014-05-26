@@ -228,6 +228,15 @@ void Node::multDerive(std::string var,Node* node)
 
 	std::cout<<"putting first node in mult to +"<<std::endl;
 }
+
+
+
+Expression Node::toExpression(){
+  // TODO: Implement!
+  return Expression("a+b*sin(d)");
+}
+
+
 /*
  void Node::divDerive(std::string var, Node* node); 
  {
