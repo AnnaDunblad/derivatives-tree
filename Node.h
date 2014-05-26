@@ -7,6 +7,8 @@
 #include <algorithm>    // std::max
 #include <vector>    // std::vector
 #include <cmath>     // pow()
+#include <stdexcept>
+
 #include "Expression.h"
 class Expression;
 
