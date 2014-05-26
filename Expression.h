@@ -9,11 +9,16 @@ class Node;
 class Expression
 {
  private: 
+  static char _allowedCharacters[];
+
   std::string _str;
 
   bool isOperator(char);
   //bool isParenthesis(char);
   bool isNumber(char);
+  bool isVariable(char);
+  bool isFunction(char);
+  void replaceString(std::string&, const std::string&, const std::string&);
   int preProcess();
   int getHighestPrecedence(std::string);
   std::string fixParenthesis(std::string);
@@ -24,5 +29,7 @@ class Expression
  public:
   Expression(std::string);
   Node* toTree();
+  bool checkError();
+
 };
 #endif
