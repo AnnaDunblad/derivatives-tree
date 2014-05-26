@@ -137,30 +137,26 @@ int Node::shorten(Node* node){
   return 0;
 }
 
-std::string Node::doOperation(float left, char op, float right)
+float Node::doOperation(float left, char op, float right)
 {
-  float result;
   switch(op){
   case '+':
-    result = left + right;
+    return left + right;
     break;
   case '-':
-    result = left - right;
+    return left - right;
     break;
   case '*':
-    result = left * right;
+    return left * right;
     break;
   case '/':
-    result = left / right;
+    return left / right;
     break;
   case '^':
-    result = pow(left, right);
+    return pow(left, right);
     break;
   }
-
-  std::ostringstream o;    
-  o << result;
-  return o.str();
+  return 0;
 }
 
 // TODO: Remove this method, if still unused when everything works!
@@ -201,4 +197,31 @@ float Node::getNumber(){
   float number;
   std::istringstream(_data) >> number;
   return number;
+}
+
+// Returns the variables used in this expression (use set because it contains unique elements)
+void Node::getVariables(std::map<std::string,float>& variables){
+
+  // If this is a variable (i.e. has no childs and is not numeric)
+  if(this->getRight() == NULL && !this->isNumeric()){
+    variables.insert(std::pair<std::string,float>(this->getData(),0));
+  }else if(this->getRight() != NULL){
+    this->getRight()->getVariables(variables);
+    this->getLeft()->getVariables(variables);
+  }
+}
+
+// Calculate the value of this tree with the variables set to the values in the map
+float Node::calculate(std::map<std::string,float>& variables){
+  // If this is a number literal
+  if(this->isNumeric())
+    return this->getNumber();
+  // If this is a variable
+  else if(this->getRight() == NULL)
+    return variables[this->getData()];
+  // If this is an operation, execute it!
+  else
+    return doOperation(this->getLeft()->calculate(variables),this->getOperator(),this->getRight()->calculate(variables));
+
+  return 0;
 }

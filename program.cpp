@@ -28,18 +28,22 @@ int main()
   std::fstream file; 
   // Loaded expressions
   std::vector<Node*> trees;
+  // Possible variables
+  std::map<std::string,float> variables;
   // Variable to differentiate with respect to
   std::string var;
   // Line when reading files
   std::string line;
+ 
 
 
 
   std::cout << "Welcome to the automatic derivative calculator" << std::endl;
+  
 
-
-
-
+  // ------------------------------------------
+  // Ask the user for a (or several) expressions
+  // ------------------------------------------  
  newExpression:
   do{
     std::cout << "Where do you have the expressions?"<< std::endl;
@@ -49,6 +53,9 @@ int main()
   
   switch(selection){
   case 1:
+    // ------------------------------------------
+    //        Read file with expressions 
+    // ------------------------------------------
     do{
       std::cout << "Enter a valid filename to a file with expressions (one expression/line):"<<std::endl;
       std::cin >> filename;
@@ -61,8 +68,12 @@ int main()
     }
     file.close();
     break;
-
+    
+    
   case 2:
+    // ------------------------------------------
+    //       Ask the user for an expression
+    // ------------------------------------------
     std::cout << "Enter a expression:" <<std::endl;
     std::string exp;
     std::cin >> exp;
@@ -71,8 +82,13 @@ int main()
   }
   
 
- newViz:
 
+
+
+  // ------------------------------------------
+  //  Ask the user how to display expressions
+  // ------------------------------------------  
+ newViz:
   do{
     std::cout << "How do you prefer the visualizing of expressions?" <<std::endl;
     std::cout << "1. Tree " << std::endl << "2. String" <<std::endl;
@@ -87,7 +103,9 @@ int main()
 
   // NOTE: Exits loop by using goto (This is the last remaining stronghold for the use of goto)
   while(true){ 
-    
+  // ------------------------------------------
+  // Ask the user how to manipulate expression
+  // ------------------------------------------  
     do{
       std::cout << "What do you want to do now?" << std::endl;
       std::cout << "1. Differentiate expression(s)" << std::endl;
@@ -104,6 +122,9 @@ int main()
     
     switch(selection){
     case 1:
+      // ------------------------------------------
+      //       Differentiate the expressions
+      // ------------------------------------------  
       std::cout << "Differentiate with respect on variable? (x, y, z, etc.)" << std::endl;
       std::cin >> var;
       for(unsigned int i = 0; i < trees.size(); i++) {
@@ -112,24 +133,52 @@ int main()
 	print(trees[i]);
       }
       break;
+
+
     case 2:
+      // ------------------------------------------
+      //            Short the expressions
+      // ------------------------------------------  
       for(unsigned int i = 0; i < trees.size(); i++) {
 	std::cout << "Expression " << i+1 <<":"<< std::endl; 
 	trees[i]->shorten();
 	print(trees[i]);
       }
       break;
+
+
     case 3:
-      std::cout << "Insert value on variable x:"<<std::endl;
-      std::cout << "To be implemented ..." << std::endl;
+      // ------------------------------------------
+      //   Calculate the value of the expression 
+      //      (first ask for variable values)
+      // ------------------------------------------  
+      for(unsigned int i = 0; i < trees.size(); i++) {
+	variables.clear();
+	std::cout << "Expression " << i+1 <<":"<< std::endl;
+	trees[i]->getVariables(variables);
+	for(std::map<std::string,float>::iterator it=variables.begin(); it!=variables.end(); ++it){
+	  std::cout << "Insert value on variable " << it->first << ":" << std::endl;
+	  float value;
+	  std::cin >> value;
+	  variables[it->first] = value;
+	}
+	
+	std::cout << "The result is " << trees[i]->calculate(variables) << std::endl;
+      }      
       break;
     case 4:
+      // ------------------------------------------
+      //   Display the expression in desired way
+      // ------------------------------------------  
       for(unsigned int i = 0; i < trees.size(); i++) {
 	std::cout << "Expression " << i+1 <<":"<< std::endl; 
 	print(trees[i]);
       }
       break;
     case 5:
+      // ------------------------------------------
+      //      Save the expressions to a file 
+      // ------------------------------------------  
       std::cout << "Enter a filename to save expressions to (will overwrite content if the file exists)" << std::endl;
       std::cin >> filename;
       file.open(filename.c_str(), std::ios::out | std::ios::trunc);
@@ -141,6 +190,10 @@ int main()
 
       break;
     case 6: 
+      // ------------------------------------------
+      //           Start over with a new 
+      //        (or add another) expression
+      // ------------------------------------------  
       do{
 	std::cout << "Do you want to remove the current expression(s) first?" << std::endl;
 	std::cout << "1. Yes" << std::endl << "2. No" <<std::endl;
@@ -150,23 +203,27 @@ int main()
 	trees.clear();
       goto newExpression;
     case 7:
+      // ------------------------------------------
+      //    Change how expression are displayed
+      // ------------------------------------------  
       goto newViz;
     case 8: 
+      // ------------------------------------------
+      //              End the program
+      // ------------------------------------------  
       goto end;
     }
   }
   
   
+
+  // ------------------------------------------
+  //               Exit message
+  // ------------------------------------------  
  end:
   std::cout << "Thanks for using our program" << std::endl;
   std::cout << "by Fredrik & Anna" << std::endl;
   std::cout << "Copyleft Creative Commons" << std::endl;
-  
-  
-  
-  
-  
-  
+   
   return 0;
-  
 }
