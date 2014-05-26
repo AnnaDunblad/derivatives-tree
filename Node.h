@@ -55,8 +55,9 @@ class Node{
   // Derive this tree, recursive
   Node* derive(std::string var);   //overload method to return result of derive
   Node* derive(std::string variable, Node* node); //recursive derive
-  void multDerive(std::string var, Node* node); //derive mutiplication
+  Node* multDerive(std::string var, Node* node); //derive mutiplication
  // void divDerive(std::string var, Node* node); //derive divisions
+	bool multDone;
   Node* copyNode(Node* node);
 
   
