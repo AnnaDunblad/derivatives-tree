@@ -1,13 +1,13 @@
 #include "Node.h"
 
 
-// Shorten the expression tree from this node (remove zeroes, remove outermost parenthesis,
+// Shorten the expression tree from this node (remove zeroes etc.)
 void Node::shorten(){
-  // TODO:  Sometimes we need to shorten the tree several times 
+  // TODO:  Sometimes we may need to shorten the tree several times 
   shorten(this);
 }
 
-// Returns number of shortened steps
+// Shorten the tree below /node/
 int Node::shorten(Node* node){
   
   // Shorten the children first (Note: Since it's a binary tree each node either have both or none children, so just check for one)
@@ -19,28 +19,23 @@ int Node::shorten(Node* node){
     return 0;
   }
   
-  
-  // If a child is 0, delete it
-  // If this operator is + or -, move the other child to this node. 
-  // If this operator is *, remove the other child as well
-  // If this operator is /, if the 0 was to the right, remove node, else error
-
-  // Node containing a child that has data=0
+  // Child node containing data=0
   Node* zeroChild = NULL;
-  // The other child (with unknown value)
+  // The other child node (with unknown data)
   Node* otherChild = NULL;
   
   if(node->getRight()->getData()=="0"){
     zeroChild = node->getRight();
     otherChild = node->getLeft();
-  }
-  else if(node->getLeft()->getData() == "0"){
+  }else if(node->getLeft()->getData() == "0"){
     zeroChild = node->getLeft();
     otherChild = node->getRight();
   }
   
-  
-  // If both children are pure numeric we can do the operation, for example 1+2 = 2 and remove the operator 
+  // --------------------------------------------------------------
+  // If both children are pure numeric we can perform the operation, 
+  // for example 1+2 = 2 and remove the operator 
+  // --------------------------------------------------------------
   if(node->getRight()->isNumeric() && node->getLeft()->isNumeric()){
     node->setData(Node::doOperation(node->getLeft()->getNumber(),node->getOperator(),node->getRight()->getNumber()));
     
@@ -50,10 +45,13 @@ int Node::shorten(Node* node){
     node->setLeft(NULL, node);
     
     return 1;
-    
-    
-  // Short a/1 and a*1 to a     
-  }else if(node->getRight()->getData()=="1" && (node->getOperator()=='*' || node->getOperator()=='/')){
+  }
+  
+  
+  // --------------------------------------------------------------
+  // Short a/1 and a*1 to a
+  // --------------------------------------------------------------
+  else if(node->getRight()->getData()=="1" && (node->getOperator()=='*' || node->getOperator()=='/')){
     
     delete node->getRight();
     Node* tmp = node->getLeft(); // Need to access getLeft() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
@@ -63,11 +61,14 @@ int Node::shorten(Node* node){
     node->setLeft(node->getLeft()->getLeft(), node);
     
     delete tmp;
-    
-    return 1; 
-    
+    return 1;
+  }
+  
+  
+  // --------------------------------------------------------------
   // Short 1*a to a
-  }else if(node->getLeft()->getData()=="1" && node->getOperator()=='*'){
+  // --------------------------------------------------------------
+  else if(node->getLeft()->getData()=="1" && node->getOperator()=='*'){
     
     delete node->getLeft();    
     Node* tmp = node->getRight(); // Need to access getRight() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
@@ -77,49 +78,49 @@ int Node::shorten(Node* node){
     node->setLeft(node->getRight()->getLeft(), node);
     
     delete tmp;
-    
     return 1; 
-
-
-
-
-
+  }
+  
+  
+  // --------------------------------------------------------------
   // If a child is 0
- }else if(zeroChild){
+  // --------------------------------------------------------------
+  else if(zeroChild){
+    
     switch(node->getOperator()){
-    // If this operator is + or - ...
-    case '-'://  Special case with (0-b), because we shoudn't short it (0-b != b)
+    
+    case '-':
+      // Special case with zero to the left, because we shoudn't short it (0-b != b)
       if(zeroChild==node->getLeft()){
 	return 0; // Use return instead of break because we don't want to remove the zeroChild after the switch 	
       }
+      // NOTE: Fall through! b-0 is the same as b+0 or 0+b
+      
     case '+':
-      // If this node has an parent (isn't the ancestor too everyone)
-      /*if(node->getParent()){
-	std::cout << "Byter bort " << node->getData() << " till " << otherChild->getData() << " i " << node->getParent()->getData() << std::endl;
-	// ... move the other child to this node. 
-	node->getParent()->changeChild(node,otherChild); // Changed 19:14 25 May, from (node,zeroChild) to (node,otherChild) Seems to work!
-	}else*/{ // Commented out 21:45 25 May, because we will (I think) never interchange the children... Just move one of the children up a step to its parent
-	// Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
-	node->setData(otherChild->getData());
-	node->setRight(otherChild->getRight(),node);
-	node->setLeft(otherChild->getLeft(),node);
-	// Delete the other node
-	delete otherChild;
-      }
+      // Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
+      node->setData(otherChild->getData());
+      node->setRight(otherChild->getRight(),node);
+      node->setLeft(otherChild->getLeft(),node);
+      // Delete the other node
+      delete otherChild;
       break;
+      
     case '/':
+      // Check for illegal operation
       if(zeroChild==node->getRight())
 	throw std::overflow_error("Divide by zero exception");
-      // NOTE: Fall through! (the same behaviour as *)
-    case '^':
+      // NOTE: Fall through! The same as multiplication. 0/b is the same as 0*b or b*0
+      
+    case '^':// If the operator is ^
+      // Check if the exponent was 0
       if(zeroChild==node->getRight()){
 	node->setData("1");
 	delete otherChild;
 	break;
       }
       // NOTE: Fall through! If the base was 0, same behaviour as *
-    // If the operator is * ...
-    case '*':
+      
+    case '*': // If the operator is * ...
       // ... remove the other child as well
       delete otherChild;
       node->setData("0");
@@ -128,7 +129,7 @@ int Node::shorten(Node* node){
       break;
     }
     
-    // Delete the 0 (must be last because we are using this pointer to get right children in changeChild).
+    // Delete the zero node (must be last because we don't want to remove the zero in for example 0-b).
     delete zeroChild; 
     return 1;
   } 
@@ -162,19 +163,7 @@ std::string Node::doOperation(float left, char op, float right)
   return o.str();
 }
 
-
-// Change the child that pointed to /from/ to /to/
-void Node::changeChild(Node* from, Node* to)
-{
-  std::cout << "from: "<<from<<", to: "<<to<<std::endl;
-  if(getLeft()==from)
-    setLeft(to,this);
-  else if(getRight()==from)
-    setRight(to,this);
-  else
-    std::cout << "ERROR in changeChild, from=" << from->getData() << ", to=" << to->getData() << ", this=" << getData() << std::endl;
-}
-
+// TODO: Remove this method, if still unused when everything works!
 Node* Node::getParent()
 {
   return _parent;
@@ -207,10 +196,9 @@ bool Node::isNumeric()
   return (std::istringstream(_data) >> number);
 }
 
+// Returns the mathematical value of this node (0 is its an operator, funcion of parenthesis)
 float Node::getNumber(){
   float number;
   std::istringstream(_data) >> number;
   return number;
 }
-
-
