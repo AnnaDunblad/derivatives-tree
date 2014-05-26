@@ -8,7 +8,7 @@ Expression::Expression(std::string str)
 
 bool Expression::isOperator(char ch)
 {
-  return ch=='*' || ch=='+' || ch=='/' || ch=='-';
+  return ch=='*' || ch=='+' || ch=='/' || ch=='-' || ch=='^';
 }
 
 bool Expression::isNumber(char ch)
@@ -79,7 +79,7 @@ int Expression::preProcess()
   // TODO: Add paranthesis around multi character numbers (for example 42) to treat them as one entity. But can have problems with for example 4c. Needs to add a * inbetween them. 
   // TODO 2: Remove all spaces in the expression, for example (a + b) => (a+b)
   // TODO 3: Fix negative exponents, or more complex exponents i.e. (5/4) or (a+b)
-  
+  // TODO 4: Add * between letter and number, i.e. 3b=>3*b
   
   char lastCharacter = 0;
   for(unsigned int i = 0; i < _str.length(); ++i) {
@@ -129,6 +129,8 @@ int Expression::preProcess()
   return 0;
 }
 
+
+
                           
 int Expression::getHighestPrecedence(std::string str)
 {
@@ -136,40 +138,51 @@ int Expression::getHighestPrecedence(std::string str)
 	int numberOfParentheses = 0;
 	int groundest = 255;
 	int groundestPosition = -1;
-	
-	for(int i = str.length(); i >= 0; --i) {
+	std::cout << "Genomsoker "<<str<<std::endl;
+	for(int i = str.length()-1; i >= 0; --i) {
 		switch(str[i])
 		{
 			case '(':
-			        std::cout << i << ":" << 2*numberOfParentheses << " ( detected" << std::endl;
+			        std::cout << i << ":" << 3*numberOfParentheses << " ( detected" << std::endl;
 				if(numberOfParentheses==0)
 				  return -1;
 				numberOfParentheses--; // OBS, the loop is in reverse order to make 5/3*4 appear (5/3)*4
 				break;
 			case ')':
- 			        std::cout << i << ":"<< 2*numberOfParentheses <<" ) detected" << std::endl;
+ 			        std::cout << i << ":"<< 3*numberOfParentheses <<" ) detected" << std::endl;
 				numberOfParentheses++;
 				break;
-			case '*':
-			case '/':
-			        std::cout << i << ":" << 2*numberOfParentheses+1  << " */ detected" << std::endl;
+		        case '^':
+			        std::cout << i << ":" << 3*numberOfParentheses+2  << " ^ detected" << std::endl;
 				
 				// If this is the operator with the highest precedence up to now
-				if(2*numberOfParentheses + 1 < groundest)
+				if(3*numberOfParentheses + 2 < groundest)
 				{
-  				        groundest = 2*numberOfParentheses + 1;
+  				        groundest = 3*numberOfParentheses + 2;
+					groundestPosition = i;
+					std::cout << i << ":" << 3*numberOfParentheses+2  << " groundestPosition = "<< i << std::endl;
+				}
+			        break;
+			case '*':
+			case '/':
+			        std::cout << i << ":" << 3*numberOfParentheses+1  << " */ detected" << std::endl;
+				
+				// If this is the operator with the highest precedence up to now
+				if(3*numberOfParentheses + 1 < groundest)
+				{
+  				        groundest = 3*numberOfParentheses + 1;
 					groundestPosition = i;
 					std::cout << i << ":" << 2*numberOfParentheses+1  << " groundestPosition = "<< i << std::endl;
 				}
 				break;
 			case '+':
-			case '-':
-			        std::cout << i << ":" << 2*numberOfParentheses  << " +- detected" << std::endl;
+		        case '-': //TODO: Don't return unary - signs as precedece value
+			        std::cout << i << ":" << 3*numberOfParentheses  << " +- detected" << std::endl;
 				
 				// If this is the operator with the highest precedence up to now
-				if(2*numberOfParentheses < groundest)
+				if(3*numberOfParentheses < groundest)
 				{
-					groundest = 2*numberOfParentheses;
+					groundest = 3*numberOfParentheses;
 					groundestPosition = i;
 					std::cout << i << ":" << 2*numberOfParentheses  << " groundestPosition = "<<i<<std::endl;
 				}
@@ -178,6 +191,7 @@ int Expression::getHighestPrecedence(std::string str)
 				break;
 		}
 	}
+	std::cout << std::endl;
 	return groundestPosition;
 }
 
