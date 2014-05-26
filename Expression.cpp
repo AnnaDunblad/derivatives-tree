@@ -7,6 +7,7 @@ char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM
 Expression::Expression(std::string str)
 {
   _str = str;
+  checkError();
 }
 
 
@@ -93,6 +94,14 @@ bool Expression::checkError()
 
   return true;
 }
+std::string Expression::toString(){
+  std::string str(_str); // Make a new copy of string
+  replaceString(str,"#","sin");
+  replaceString(str,"%","cos");
+  replaceString(str,"&","ln");
+  return str;
+}
+
 
 
 // Prepare the string before we split it in parts

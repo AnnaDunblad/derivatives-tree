@@ -18,6 +18,12 @@ Node::Node()
   return true;
 }*/
 
+
+void Node::setData(float data){
+  std::ostringstream o;    
+  o << data;
+  _data = o.str();
+}
 void Node::setData(std::string data){
   _data = data;
 }
@@ -222,6 +228,38 @@ void Node::addDerive(std::string var,Node* node, Node* newNode)
  	newNode->setLeft(derive(var,leftTree,newNode->getLeft()),newNode); //putting the left child node to the derived value
 	newNode->setRight(derive(var,rightTree,newNode->getRight()),newNode); //putting the right child node to the derived value
 
+<<<<<<< HEAD
+=======
+	node->getLeft()->setLeft(LLnode,node->getLeft()); 						//put left-left child node to copied value (the one not derivated)
+	node->getRight()->setRight(RRnode,node->getRight()); //put right-right child node to copied value (the one not derivated)
+	std::cout<<"Child nodes copied"<<std::endl;
+	
+	*/
+
+	std::cout<<"putting first node in mult to +"<<std::endl;
+}
+
+
+
+Expression Node::toExpression(){
+  // TODO: Implement!
+  return Expression("a+b*sin(d)");
+}
+
+
+/*
+ void Node::divDerive(std::string var, Node* node); 
+ {
+ 
+ 
+ }
+  
+  void Node::setData(std::string data){
+  _data = data;
+}
+std::string Node::getData(){
+  return _data;
+>>>>>>> 78c5f017a0d306bd3d3a104fce38ae101661c132
 }
 void Node::subDerive(std::string var,Node* node, Node* newNode)
 {
