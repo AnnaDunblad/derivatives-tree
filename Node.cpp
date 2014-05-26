@@ -149,7 +149,7 @@ Node* Node::derive(std::string variable,Node* node, Node* newNode )
 				break;
 			case '/':
 				divDerive(variable,node,newNode);
-				break;	
+				break;				
 			case  '+':	
 				std::cout<<" + detected"<<std::endl;
 				addDerive(variable,node, newNode);
@@ -264,7 +264,8 @@ void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)
 	newNode->setData("/");
 	//Copying the values of right and left child node to save for later use
 	Node* leftTree = copyNodeTree(node->getLeft()); //f	
-	Node* rightTree = copyNodeTree(node->getRight()); //g	
+	Node* rightTree1 = copyNodeTree(node->getRight()); //g
+	Node* rightTree2 = copyNodeTree(node->getRight()); //g, making a second to later be left-left-right node
 
 	//creating first branches to new tree
 	newNode->setRight(new Node(),newNode);
@@ -277,7 +278,7 @@ void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)
 	//Creating right branch and asigning the nodes: g and 2 (g^2)
 	newNode->getRight()->setRight(new Node(),newNode->getRight());
 	newNode->getRight()->getRight()->setData("2"); //2
-	newNode->getRight()->setLeft(rightTree,newNode->getRight()); //g
+	newNode->getRight()->setLeft(rightTree1,newNode->getRight()); //g
 
 	//Creating left branch and asigning the nodes: 
 	 newNode->getLeft()->setLeft(new Node(),newNode->getLeft());
@@ -289,11 +290,11 @@ void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)
 	leftLeft->setData("*");
 	leftRight->setData("*");
 	//putting the left-left-right node and left-right-left node to g and f
-	leftLeft->setRight(rightTree,leftLeft);
+	leftLeft->setRight(rightTree2,leftLeft);
 	leftRight->setLeft(leftTree,leftRight);
 	//putting the left-left-left node and left-right-right node to f' and g'
 	leftLeft->setLeft(derive(var,leftTree,new Node()),leftLeft);
-	leftRight->setRight(derive(var,rightTree,new Node()),leftRight);
+	leftRight->setRight(derive(var,rightTree1,new Node()),leftRight);
 	std::cout<<"derivation of div done"<<std::endl;
 	
  } 
