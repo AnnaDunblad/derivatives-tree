@@ -36,7 +36,8 @@ int Node::shorten(Node* node){
   // If both children are pure numeric we can perform the operation, 
   // for example 1+2 = 2 and remove the operator 
   // --------------------------------------------------------------
-  if(node->getRight()->isNumeric() && node->getLeft()->isNumeric()){
+  // If both are pure numeric OR right numeric while left empty (then we have a function, like sine or log). 
+  if((node->getRight()->isNumeric() && node->getLeft()->isNumeric()) || (node->getRight()->isNumeric() && node->getLeft()->getData().empty())){
     node->setData(Node::doOperation(node->getLeft()->getNumber(),node->getOperator(),node->getRight()->getNumber()));
     
     delete node->getRight();
@@ -155,6 +156,13 @@ float Node::doOperation(float left, char op, float right)
   case '^':
     return pow(left, right);
     break;
+  case '#':
+    return sin(right);
+    break;
+  case '%':
+    return cos(right);
+  case '&':
+    return log(right); // Note this is the natural logarithm
   }
   return 0;
 }
@@ -182,6 +190,12 @@ char Node::getOperator()
     return '/';
   else if(getData()=="^")
     return '^';
+  else if(getData()=="#")
+    return '#';
+  else if(getData()=="%")
+    return '%';
+  else if(getData()=="&")
+    return '&';
   return 'n';
 }
 
@@ -203,7 +217,7 @@ float Node::getNumber(){
 void Node::getVariables(std::map<std::string,float>& variables){
 
   // If this is a variable (i.e. has no childs and is not numeric)
-  if(this->getRight() == NULL && !this->isNumeric()){
+  if(this->getRight() == NULL && !this->isNumeric() && !this->getData().empty()){
     variables.insert(std::pair<std::string,float>(this->getData(),0));
   }else if(this->getRight() != NULL){
     this->getRight()->getVariables(variables);

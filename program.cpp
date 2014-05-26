@@ -8,6 +8,8 @@
 
 // Howto print the expressions (true==trees, false==strings)
 bool treeViz = false;
+
+// Function to print the tree in a desired way
 void print(Node* tree)
 {
   if(treeViz)
@@ -125,11 +127,39 @@ int main()
       // ------------------------------------------
       //       Differentiate the expressions
       // ------------------------------------------  
-      std::cout << "Differentiate with respect on variable? (x, y, z, etc.)" << std::endl;
-      std::cin >> var;
       for(unsigned int i = 0; i < trees.size(); i++) {
-	std::cout << "Expression " << i+1 <<":"<< std::endl; 
+	variables.clear();
+	std::cout << "Expression " << i+1 <<":"<< std::endl;
+	print(trees[i]);
+	
+	// ------------------------------------------
+	//      Ask for differentiate variable
+	// ------------------------------------------  
+	trees[i]->getVariables(variables);
+	// If the tree didn't contain any variable I just pass x as dummy variable
+	if(variables.empty()){
+	  var="x";   
+	}
+	// If the tree just has one variable we don't need to bother the user with a question, just use the variable
+	else if(variables.size()==1){
+	  std::cout << "Differentiate with respect on " << variables.begin()->first << std::endl;
+	  var = variables.begin()->first;
+	}
+	// If the tree has several variables we need to ask which one the user want to derive with respect on
+	else{
+	  do{
+	    std::cout << "Differentiate with respect on variable?" << std::endl;
+	    for(std::map<std::string,float>::iterator it=variables.begin(); it!=variables.end(); ++it){
+	      std::cout << it->first << std::endl;
+	    }
+	    std::cin >> var;
+	    
+	    // Loop until the user picks a existing variable
+	  }while(variables.find(var) == variables.end());
+	}
+	// Differentiate the expression
 	trees[i] = trees[i]->derive(var);
+	// Print it again (just debug)
 	print(trees[i]);
       }
       break;
