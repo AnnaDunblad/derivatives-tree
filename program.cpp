@@ -8,6 +8,8 @@
 
 // Howto print the expressions (true==trees, false==strings)
 bool treeViz = false;
+
+// Function to print the tree in a desired way
 void print(Node* tree)
 {
   if(treeViz)
