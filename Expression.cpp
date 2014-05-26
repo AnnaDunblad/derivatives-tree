@@ -4,7 +4,6 @@
 char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^()"; 
 
 
-
 Expression::Expression(std::string str)
 {
   _str = str;
@@ -16,7 +15,6 @@ bool Expression::isOperator(char ch)
 {
   return ch=='*' || ch=='+' || ch=='/' || ch=='-' || ch=='^';
 }
-
 bool Expression::isNumber(char ch)
 {
   return ch >= '0' && ch <= '9';
@@ -145,7 +143,7 @@ int Expression::preProcess()
     // Update last character
     lastCharacter = _str[i];
   }
-
+  
   std::cout << "Returned " << _str << std::endl;
   
   return 0;
@@ -153,82 +151,79 @@ int Expression::preProcess()
 
 
 
-                          
+
 int Expression::getHighestPrecedence(std::string str)
 {
-  	// Search for the operator with highest precedence. 
-	int numberOfParentheses = 0;
-	int groundest = 255;
-	int groundestPosition = -1;
-	std::cout << "Genomsoker "<<str<<std::endl;
-	for(int i = str.length()-1; i >= 0; --i) {
-		switch(str[i])
-		{
-			case '(':
-			        std::cout << i << ":" << 4*numberOfParentheses << " ( detected" << std::endl;
-				if(numberOfParentheses==0)
-				  throw std::invalid_argument("Mismatch of parentheses exception");
-				numberOfParentheses--; // OBS, the loop is in reverse order to make 5/3*4 appear (5/3)*4
-				break;
-			case ')':
- 			        std::cout << i << ":"<< 4*numberOfParentheses <<" ) detected" << std::endl;
-				numberOfParentheses++;
-				break;
-			case '&':
-			case '%':
-		        case '#':
-			        std::cout << i << ":" << 4*numberOfParentheses+3  << " #%& detected" << std::endl;
-				
-				// If this is the operator with the highest precedence up to now
-				if(4*numberOfParentheses + 3 < groundest)
-				{
-  				        groundest = 4*numberOfParentheses + 3;
-					groundestPosition = i;
-					std::cout << i << ":" << 4*numberOfParentheses+3  << " groundestPosition = "<< i << std::endl;
-				}
-				break;
-
-		        case '^':
-			        std::cout << i << ":" << 4*numberOfParentheses+2  << " ^ detected" << std::endl;
-				
-				// If this is the operator with the highest precedence up to now
-				if(4*numberOfParentheses + 2 < groundest)
-				{
-  				        groundest = 4*numberOfParentheses + 2;
-					groundestPosition = i;
-					std::cout << i << ":" << 4*numberOfParentheses+2  << " groundestPosition = "<< i << std::endl;
-				}
-			        break;
-			case '*':
-			case '/':
-			        std::cout << i << ":" << 4*numberOfParentheses+1  << " */ detected" << std::endl;
-				
-				// If this is the operator with the highest precedence up to now
-				if(4*numberOfParentheses + 1 < groundest)
-				{
-  				        groundest = 4*numberOfParentheses + 1;
-					groundestPosition = i;
-					std::cout << i << ":" << 4*numberOfParentheses+1  << " groundestPosition = "<< i << std::endl;
-				}
-				break;
-			case '+':
-		        case '-': //TODO: Don't return unary - signs as precedece value
-			        std::cout << i << ":" << 4*numberOfParentheses  << " +- detected" << std::endl;
-				
-				// If this is the operator with the highest precedence up to now
-				if(4*numberOfParentheses < groundest)
-				{
-					groundest = 4*numberOfParentheses;
-					groundestPosition = i;
-					std::cout << i << ":" << 4*numberOfParentheses  << " groundestPosition = "<<i<<std::endl;
-				}
-			default: 
-				// Number (or variable detected)
-				break;
-		}
-	}
-	std::cout << std::endl;
-	return groundestPosition;
+  // Search for the operator with highest precedence. 
+  int numberOfParentheses = 0;
+  int groundest = 255;
+  int groundestPosition = -1;
+  std::cout << "Genomsoker "<<str<<std::endl;
+  for(int i = str.length()-1; i >= 0; --i) {
+    
+    switch(str[i]) {
+    case '(':
+      std::cout << i << ":" << 4*numberOfParentheses << " ( detected" << std::endl;
+      if(numberOfParentheses==0)
+	throw std::invalid_argument("Mismatch of parentheses exception");
+      numberOfParentheses--; // OBS, the loop is in reverse order to make 5/3*4 appear (5/3)*4
+      break;
+    case ')':
+      std::cout << i << ":"<< 4*numberOfParentheses <<" ) detected" << std::endl;
+      numberOfParentheses++;
+      break;
+    case '&':
+    case '%':
+    case '#':
+      std::cout << i << ":" << 4*numberOfParentheses+3  << " #%& detected" << std::endl;
+      
+      // If this is the operator with the highest precedence up to now
+      if(4*numberOfParentheses + 3 < groundest) {
+	groundest = 4*numberOfParentheses + 3;
+	groundestPosition = i;
+	std::cout << i << ":" << 4*numberOfParentheses+3  << " groundestPosition = "<< i << std::endl;
+      }
+      break;
+      
+    case '^':
+      std::cout << i << ":" << 4*numberOfParentheses+2  << " ^ detected" << std::endl;
+      
+      // If this is the operator with the highest precedence up to now
+      if(4*numberOfParentheses + 2 < groundest) {
+	groundest = 4*numberOfParentheses + 2;
+	groundestPosition = i;
+	std::cout << i << ":" << 4*numberOfParentheses+2  << " groundestPosition = "<< i << std::endl;
+      }
+      break;
+      
+    case '*':
+    case '/':
+      std::cout << i << ":" << 4*numberOfParentheses+1  << " */ detected" << std::endl;
+      
+      // If this is the operator with the highest precedence up to now
+      if(4*numberOfParentheses + 1 < groundest){
+	groundest = 4*numberOfParentheses + 1;
+	groundestPosition = i;
+	std::cout << i << ":" << 4*numberOfParentheses+1  << " groundestPosition = "<< i << std::endl;
+      }
+      break;
+    case '+':
+    case '-': //TODO: Don't return unary - signs as precedece value
+      std::cout << i << ":" << 4*numberOfParentheses  << " +- detected" << std::endl;
+      
+      // If this is the operator with the highest precedence up to now
+      if(4*numberOfParentheses < groundest){
+	groundest = 4*numberOfParentheses;
+	groundestPosition = i;
+	std::cout << i << ":" << 4*numberOfParentheses  << " groundestPosition = "<<i<<std::endl;
+      }
+    default: 
+      // Number (or variable detected)
+      break;
+    }
+  }
+  std::cout << std::endl;
+  return groundestPosition;
 }
 
 // Removes a possible spare outer parantesis (this is due to the way I split the expressions at the operator with the highest predence, for example (4+5*3) will split as "(4" and "5*3)" )
