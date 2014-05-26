@@ -65,8 +65,7 @@ class Node{
 
 
 	static Node* copyNodeTree(Node* node);
-	void leftChildDone();
-	bool leftChildDoneVar;	
+	
 
   // Returns a map with all variables used in this tree (and their values set to 0)
   void getVariables(std::map<std::string,float>&);
