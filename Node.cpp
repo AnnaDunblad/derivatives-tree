@@ -17,6 +17,12 @@ Node::Node()
   return true;
 }*/
 
+
+void Node::setData(float data){
+  std::ostringstream o;    
+  o << data;
+  _data = o.str();
+}
 void Node::setData(std::string data){
   _data = data;
 }

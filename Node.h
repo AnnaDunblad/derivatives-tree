@@ -2,13 +2,13 @@
 #define NODE_H
 
 #include <string>
-#include <iostream> // cin and cout
-#include <sstream> // To convert string to integer
-#include <algorithm>    // std::max
+#include <iostream>  // cin and cout
+#include <sstream>   // To convert string to integer
+#include <algorithm> // std::max
 #include <vector>    // std::vector
 #include <cmath>     // pow()
-#include <stdexcept>
-
+#include <stdexcept> // Exceptions 
+#include <map>       // Map used when calculating value of an tree, save all variables and their values in a map
 #include "Expression.h"
 class Expression;
 
@@ -31,7 +31,7 @@ class Node{
   char getOperator();
   bool isNumeric();
   float getNumber();
-  static std::string doOperation(float,char,float);
+  static float doOperation(float,char,float);
  public: 
   //Node(Operator _operator, Node* leftChildren, Node* rightChildren);
   Node(); // Empty constructor that we use when creating three
@@ -43,6 +43,7 @@ class Node{
   void setLeft(Node*, Node*);
   //bool setOperator(char);
   //bool setOperator(Operator);
+  void setData(float);
   void setData(std::string);
   std::string getData();
   
@@ -61,6 +62,10 @@ class Node{
  // void divDerive(std::string var, Node* node); //derive divisions
   Node* copyNode(Node* node);
 
+  // Returns a map with all variables used in this tree (and their values set to 0)
+  void getVariables(std::map<std::string,float>&);
+  // Calculate the value of this tree with the variables set to the values in the map
+  float calculate(std::map<std::string,float>&);
   
 };
 
