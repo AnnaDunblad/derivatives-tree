@@ -127,10 +127,31 @@ int main()
       // ------------------------------------------
       //       Differentiate the expressions
       // ------------------------------------------  
-      std::cout << "Differentiate with respect on variable? (x, y, z, etc.)" << std::endl;
-      std::cin >> var;
       for(unsigned int i = 0; i < trees.size(); i++) {
-	std::cout << "Expression " << i+1 <<":"<< std::endl; 
+	variables.clear();
+	std::cout << "Expression " << i+1 <<":"<< std::endl;
+	print(trees[i]);
+	
+	// ------------------------------------------
+	//      Ask for differentiate variable
+	// ------------------------------------------  
+	trees[i]->getVariables(variables);
+	if(variables.empty()){
+	  var="x";
+	}else if(variables.size()==1){
+	  std::cout << "Differentiate with respect on " << variables.begin()->first << std::endl;
+	  var = variables.begin()->first;
+	}else{
+	  do{
+	    std::cout << "Differentiate with respect on variable?" << std::endl;
+	    
+	    for(std::map<std::string,float>::iterator it=variables.begin(); it!=variables.end(); ++it){
+	      std::cout << it->first << std::endl;
+	    }
+	    std::cin >> var;
+	    
+	  }while(variables.find(var) == variables.end());
+	}
 	trees[i] = trees[i]->derive(var);
 	print(trees[i]);
       }
