@@ -19,14 +19,12 @@ class Node{
  private: 
   Node* _rightChildren;
   Node* _leftChildren;
-  Node* _parent;
   std::string _data; 
 
   int maxLevel(Node* node);
   bool isAllElementsNull(std::vector<Node*>);
   void printTreeInternal(std::vector<Node*>, int, int);
   int shorten(Node*);
-  void setParent(Node*);
   char getOperator();
   bool isNumeric();
   float getNumber();
@@ -35,11 +33,10 @@ class Node{
 
   Node(); // Empty constructor that we use when creating nodes to three
   void changeChild(Node*, Node*);
-  Node* getParent();
   Node* getRight();
   Node* getLeft();
-  void setRight(Node*, Node*);
-  void setLeft(Node*, Node*);
+  void setRight(Node*);
+  void setLeft(Node*);
   void setData(float);
   void setData(std::string);
   std::string getData();

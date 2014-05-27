@@ -76,8 +76,8 @@ void Expression::toTreeInternal(Node* currNode, std::string currStr)
   else{
     currNode->setData(std::string(1,currStr[pos]));
     //std::cout << "operand satt till: " << currStr[pos] << std::endl;
-    currNode->setRight(new Node(),currNode);
-    currNode->setLeft(new Node(),currNode);
+    currNode->setRight(new Node());
+    currNode->setLeft(new Node());
     
     toTreeInternal(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
     toTreeInternal(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));

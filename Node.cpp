@@ -5,7 +5,6 @@ Node::Node()
 {
   _leftChildren = NULL;
   _rightChildren = NULL;
-  _parent = NULL;
 	}
 
 void Node::setData(float data){
@@ -21,13 +20,11 @@ std::string Node::getData(){
 }
 
 
-void Node::setRight(Node* node, Node* parent){
+void Node::setRight(Node* node){
   _rightChildren = node;
-  setParent(parent);
 }
-void Node::setLeft(Node* node, Node* parent){
+void Node::setLeft(Node* node){
   _leftChildren = node;
-  setParent(parent);
 }
 
 Node* Node::getRight(){
@@ -69,12 +66,10 @@ void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) 
     std::cout << std::string(betweenSpaces,' ');
   }
   
-
   std::cout << std::endl;
 
   for (int i = 1; i <= endgeLines; i++) {
     for (unsigned int j = 0; j < nodes.size(); j++) {
-      //std::cout << firstSpaces - i << std::endl;
       if(firstSpaces - i > 0)
 	std::cout << std::string(firstSpaces - i,' ');
 
@@ -182,8 +177,8 @@ Node* Node::copyNodeTree(Node* node)
 	newNode->setData(node->getData()); //copy first node
 	if(node->getRight()!=NULL && node->getRight()!=NULL)
 	{
-		newNode->setRight(node->getRight(),newNode);
-		newNode->setLeft(node->getLeft(),newNode);
+		newNode->setRight(node->getRight());
+		newNode->setLeft(node->getLeft());
 		copyNodeTree(node->getLeft());
 		copyNodeTree(node->getRight());
 	}
@@ -203,8 +198,8 @@ void Node::addDifferentiate(std::string var,Node* node, Node* newNode)
 
 	//creating new tree
 	newNode->setData("+");
-	newNode->setLeft(differentiate(var,leftTree,new Node()),newNode); //putting the left child node to the differentiated value
-	newNode->setRight(differentiate(var,rightTree,new Node()),newNode); //putting the right child node to the differentiated value
+	newNode->setLeft(differentiate(var,leftTree,new Node())); //putting the left child node to the differentiated value
+	newNode->setRight(differentiate(var,rightTree,new Node())); //putting the right child node to the differentiated value
 
 }
 //differentiate subtraction
@@ -218,8 +213,8 @@ void Node::subDifferentiate(std::string var,Node* node, Node* newNode)
 	Node* leftTree = copyNodeTree(node->getLeft());
 
 	//creating new tree with differentiated values
-	newNode->setLeft(differentiate(var,leftTree,new Node()),newNode); //putting the left-right child node to the differentiated value
-	newNode->setRight(differentiate(var,rightTree,new Node()),newNode); //putting the left-right child node to the differentiated value
+	newNode->setLeft(differentiate(var,leftTree,new Node())); //putting the left-right child node to the differentiated value
+	newNode->setRight(differentiate(var,rightTree,new Node())); //putting the left-right child node to the differentiated value
 
 }
 //differentiate mutiplication
@@ -232,17 +227,17 @@ void Node::multDifferentiate(std::string var,Node* node, Node* newNode) 	//rule:
 	Node* leftTree = copyNodeTree(node->getLeft());
 
 	//creating new tree
-	newNode->setRight(new Node(),newNode);
-	newNode->setLeft(new Node(),newNode);
+	newNode->setRight(new Node());
+	newNode->setLeft(new Node());
 
 	//putting the right and left children to * 
 	newNode->getRight()->setData("*");
 	newNode->getLeft()->setData("*");
 
-	newNode->getLeft()->setLeft(leftTree,newNode->getLeft());   //put left-left child tree to copied tree (the one not derivated)
-	newNode->getRight()->setLeft(differentiate(var,leftTree,new Node()),newNode->getRight()); //putting the left-right child node to the differentiated value
-	newNode->getLeft()->setRight(differentiate(var,rightTree,new Node()),newNode->getLeft()); //putting the left-right child node to the differentiated value
-	newNode->getRight()->setRight(rightTree,newNode->getRight()); //put right-right child tree to copied tree (the one not derivated)
+	newNode->getLeft()->setLeft(leftTree);   //put left-left child tree to copied tree (the one not derivated)
+	newNode->getRight()->setLeft(differentiate(var,leftTree,new Node())); //putting the left-right child node to the differentiated value
+	newNode->getLeft()->setRight(differentiate(var,rightTree,new Node())); //putting the left-right child node to the differentiated value
+	newNode->getRight()->setRight(rightTree); //put right-right child tree to copied tree (the one not derivated)
 
 }
 //differentiate divisions
@@ -256,21 +251,21 @@ void Node::multDifferentiate(std::string var,Node* node, Node* newNode) 	//rule:
 	Node* rightTree2 = copyNodeTree(node->getRight()); //g, making a second to later be left-left-right node
 
 	//creating first branches to new tree
-	newNode->setRight(new Node(),newNode);
-	newNode->setLeft(new Node(),newNode);
+	newNode->setRight(new Node());
+	newNode->setLeft(new Node());
 
 	//putting the right and left children to - resp. ^ 
 	newNode->getLeft()->setData("-");
 	newNode->getRight()->setData("^");
 
 	//Creating right branch and asigning the nodes: g and 2 (g^2)
-	newNode->getRight()->setRight(new Node(),newNode->getRight());
+	newNode->getRight()->setRight(new Node());
 	newNode->getRight()->getRight()->setData("2"); //2
-	newNode->getRight()->setLeft(rightTree1,newNode->getRight()); //g
+	newNode->getRight()->setLeft(rightTree1); //g
 
 	//Creating left branch and asigning the nodes: 
-	newNode->getLeft()->setLeft(new Node(),newNode->getLeft());
-	newNode->getLeft()->setRight(new Node(),newNode->getLeft());
+	newNode->getLeft()->setLeft(new Node());
+	newNode->getLeft()->setRight(new Node());
 	Node* leftLeft=newNode->getLeft()->getLeft();
 	Node* leftRight= newNode->getLeft()->getRight();
 
@@ -278,12 +273,11 @@ void Node::multDifferentiate(std::string var,Node* node, Node* newNode) 	//rule:
 	leftLeft->setData("*");
 	leftRight->setData("*");
 	//putting the left-left-right node and left-right-left node to g and f
-	leftLeft->setRight(rightTree2,leftLeft);
-	leftRight->setLeft(leftTree,leftRight);
+	leftLeft->setRight(rightTree2);
+	leftRight->setLeft(leftTree);
 	//putting the left-left-left node and left-right-right node to f' and g'
-	leftLeft->setLeft(differentiate(var,leftTree,new Node()),leftLeft);
-	leftRight->setRight(differentiate(var,rightTree1,new Node()),leftRight);
-	std::cout<<"derivation of div done"<<std::endl;
+	leftLeft->setLeft(differentiate(var,leftTree,new Node()));
+	leftRight->setRight(differentiate(var,rightTree1,new Node()));
 	
  } 
  //differentiate power
@@ -300,8 +294,8 @@ void Node::multDifferentiate(std::string var,Node* node, Node* newNode) 	//rule:
 	Node* rightTree2 = copyNodeTree(node->getRight()); //g2
 
 	//creating first branches to new tree
-	newNode->setRight(new Node(),newNode);
-	newNode->setLeft(new Node(),newNode);
+	newNode->setRight(new Node());
+	newNode->setLeft(new Node());
 
 	//putting the right and left children to ^ resp. + 
 	newNode->getLeft()->setData("^");
@@ -309,32 +303,32 @@ void Node::multDifferentiate(std::string var,Node* node, Node* newNode) 	//rule:
 
 
 	//Creating left branch and asigning the nodes: 
-	newNode->getLeft()->setLeft(leftTree1,newNode->getLeft()); //LL
-	newNode->getLeft()->setRight(rightTree1,newNode->getLeft()); //LR
+	newNode->getLeft()->setLeft(leftTree1); //LL
+	newNode->getLeft()->setRight(rightTree1); //LR
 
 
 
 	//Creating right-left branch and asigning the nodes: 
-	newNode->getRight()->setLeft(new Node(),newNode->getRight());
+	newNode->getRight()->setLeft(new Node());
 	Node* rightLeft=newNode->getRight()->getLeft(); //RL
 	rightLeft->setData("*"); //RL
-	rightLeft->setLeft(differentiate(var,leftTree1,new Node()),rightLeft); // RLL
-	rightLeft->setRight(new Node(),rightLeft); //RLR
+	rightLeft->setLeft(differentiate(var,leftTree1,new Node())); // RLL
+	rightLeft->setRight(new Node()); //RLR
 	rightLeft->getRight()->setData("/"); //RLR
-	rightLeft->getRight()->setLeft(rightTree2,rightLeft->getRight()); //RLRL
-	rightLeft->getRight()->setRight(leftTree2,rightLeft->getRight()); //RLRR
+	rightLeft->getRight()->setLeft(rightTree2); //RLRL
+	rightLeft->getRight()->setRight(leftTree2); //RLRR
 
 	//Creating right-right branch and asigning the nodes:
-	newNode->getRight()->setRight(new Node(),newNode->getRight());
+	newNode->getRight()->setRight(new Node());
 	Node* rightRight=newNode->getRight()->getRight(); //RR
 	rightRight->setData("*"); //RR
-	rightRight->setLeft(differentiate(var,rightTree1,new Node()),rightRight); //RRL
-	rightRight->setRight(new Node(),rightRight); //creating node RRR
+	rightRight->setLeft(differentiate(var,rightTree1,new Node())); //RRL
+	rightRight->setRight(new Node()); //creating node RRR
 	Node* rightRightRight=rightRight->getRight();
 	rightRightRight->setData("&"); //& representing ln,  RRR
-	rightRightRight->setLeft(new Node(),rightRightRight);
+	rightRightRight->setLeft(new Node());
 	rightRightRight->getLeft()->setData(""); // RRRL empty node
-	rightRightRight->setRight(leftTree3,rightRightRight); // RRRR
+	rightRightRight->setRight(leftTree3); // RRRR
 
 	std::cout<<"derivation of pow done"<<std::endl;
 
@@ -348,17 +342,17 @@ void Node::cosDifferentiate(std::string var, Node* node, Node* newNode){ //rule:
 	Node* rightTree = copyNodeTree(node->getRight()); //f
 	
 	//creating and asigning child nodes
-	newNode->setRight(new Node(),newNode);
+	newNode->setRight(new Node());
 	newNode->getRight()->setData("#"); //R
-	newNode->getRight()->setRight(rightTree,newNode->getRight()); //RR
-	newNode->getRight()->setLeft(new Node(),newNode->getRight());
+	newNode->getRight()->setRight(rightTree); //RR
+	newNode->getRight()->setLeft(new Node());
 	newNode->getRight()->getLeft()->setData(""); //RL empty node
 	
-	newNode->setLeft(new Node(),newNode);
+	newNode->setLeft(new Node());
 	newNode->getLeft()->setData("-"); //L
-	newNode->getLeft()->setLeft(new Node(),newNode->getLeft());	
+	newNode->getLeft()->setLeft(new Node());	
 	newNode->getLeft()->getLeft()->setData("0");
-	newNode->getLeft()->setRight(differentiate(var,rightTree,new Node()),newNode->getLeft());
+	newNode->getLeft()->setRight(differentiate(var,rightTree,new Node()));
 	
 
 }
@@ -370,13 +364,13 @@ void Node::sinDifferentiate(std::string var, Node* node, Node* newNode){//rule: 
 	//Copying the values of right child node to save for later use 
 	Node* rightTree = copyNodeTree(node->getRight()); //f	
 	//creating and asigning child nodes
-	newNode->setRight(new Node(),newNode);
+	newNode->setRight(new Node());
 	newNode->getRight()->setData("%"); //R
-	newNode->getRight()->setRight(rightTree,newNode->getRight()); //RR
-	newNode->getRight()->setLeft(new Node(),newNode);
+	newNode->getRight()->setRight(rightTree); //RR
+	newNode->getRight()->setLeft(new Node());
 	newNode->getRight()->getLeft()->setData(""); //RL empty node
 	
-	newNode->setLeft(differentiate(var,rightTree,new Node()),newNode); //L
+	newNode->setLeft(differentiate(var,rightTree,new Node())); //L
 }
 
 //differentiate ln
@@ -389,8 +383,8 @@ void Node::lnDifferentiate(std::string var, Node* node, Node* newNode) //(ln(f)'
 	Node* rightTree = copyNodeTree(node->getRight()); //f	
 	
 	//creating and asigning child nodes
-	newNode->setRight(rightTree,newNode); //R
-	newNode->setLeft(differentiate(var,rightTree,new Node()),newNode); //L
+	newNode->setRight(rightTree); //R
+	newNode->setLeft(differentiate(var,rightTree,new Node())); //L
 
 
 }
