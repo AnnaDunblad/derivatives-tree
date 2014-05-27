@@ -145,7 +145,7 @@ int main()
 	  std::cout << "Differentiate with respect on " << variables.begin()->first << std::endl;
 	  var = variables.begin()->first;
 	}
-	// If the tree has several variables we need to ask which one the user want to derive with respect on
+	// If the tree has several variables we need to ask which one the user want to differentiate with respect on
 	else{
 	  do{
 	    std::cout << "Differentiate with respect on variable?" << std::endl;
@@ -158,7 +158,7 @@ int main()
 	  }while(variables.find(var) == variables.end());
 	}
 	// Differentiate the expression
-	trees[i] = trees[i]->derive(var);
+	trees[i] = trees[i]->differentiate(var);
 	// Print it again (just debug)
 	print(trees[i]);
       }

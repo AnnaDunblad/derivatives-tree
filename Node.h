@@ -20,8 +20,7 @@ class Node{
   Node* _rightChildren;
   Node* _leftChildren;
   Node* _parent;
-  //Operator _operator;
-  std::string _data; // If _operator is NUM we keep the number in _data
+  std::string _data; 
 
   int maxLevel(Node* node);
   bool isAllElementsNull(std::vector<Node*>);
@@ -33,16 +32,14 @@ class Node{
   float getNumber();
   static float doOperation(float,char,float);
  public: 
-  //Node(Operator _operator, Node* leftChildren, Node* rightChildren);
-  Node(); // Empty constructor that we use when creating three
+
+  Node(); // Empty constructor that we use when creating nodes to three
   void changeChild(Node*, Node*);
   Node* getParent();
   Node* getRight();
   Node* getLeft();
   void setRight(Node*, Node*);
   void setLeft(Node*, Node*);
-  //bool setOperator(char);
-  //bool setOperator(Operator);
   void setData(float);
   void setData(std::string);
   std::string getData();
@@ -50,24 +47,29 @@ class Node{
   // Return a printable representation of this tree
   void printTree();
   
-  Expression toExpression();
+
   
   // Shorten the expression tree (remove zeroes, remove outermost parenthesis, 
   void shorten();
   
-  // Derive this tree, recursive
-	Node* derive(std::string var);   //overload method to return result of derive
-	Node* derive(std::string variable, Node* node, Node* newNode); //recursive derive
-	void multDerive(std::string var, Node* node, Node* newNode); //derive mutiplication
-	void divDerive(std::string var,Node* node, Node* newNode); //derive divisions
-	void addDerive(std::string var, Node* node, Node* newNode);
-	void subDerive(std::string var, Node* node, Node* newNode);
-	void powDerive(std::string var,Node* node, Node* newNode);
-	void cosDerive(std::string var, Node* node, Node* newNode);
-	void sinDerive(std::string var,Node* node, Node* newNode);
+  
+	Node* differentiate(std::string var);   //overload method to return result of differentiate
+	Node* differentiate(std::string variable, Node* node, Node* newNode); // differentiate this tree, recursive
+	
+	static Node* copyNodeTree(Node* node); //copies a tree nodewise recursive 
+	Expression toExpression(); //turns the resulttree into a string
+	
+	void addDifferentiate(std::string var, Node* node, Node* newNode); //differentiate additions
+	void subDifferentiate(std::string var, Node* node, Node* newNode); //differentiate subtractions
+	void multDifferentiate(std::string var, Node* node, Node* newNode); //differentiate mutiplication
+	void divDifferentiate(std::string var,Node* node, Node* newNode); //differentiate divisions
+	void powDifferentiate(std::string var,Node* node, Node* newNode);//differentiate powers	
+	void cosDifferentiate(std::string var, Node* node, Node* newNode); //differentate cin	
+	void sinDifferentiate(std::string var,Node* node, Node* newNode); //differetiate sin
+	void lnDifferentiate(std::string var, Node* node, Node* newNode); //differentiate ln
 
 
-	static Node* copyNodeTree(Node* node);
+
 	
 
   // Returns a map with all variables used in this tree (and their values set to 0)

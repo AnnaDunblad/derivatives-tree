@@ -8,16 +8,6 @@ Node::Node()
   _parent = NULL;
 	}
 
-/*bool Node::setData(std::string data)
-{
-  if (!(std::istringstream(data) >> _data)){
-    _data = 0;
-    return false;
-  }
-  return true;
-}*/
-
-
 void Node::setData(float data){
   std::ostringstream o;    
   o << data;
@@ -129,67 +119,63 @@ bool Node::isAllElementsNull(std::vector<Node*> list) {
   }
   return true;
 }
-
-Node* Node::derive(std::string var)
+//overload method to return result of differentiate
+Node* Node::differentiate(std::string var)
 {
 	Node* newNode=new Node();
 	
-	return derive(var,this,newNode);
+	return differentiate(var,this,newNode);
 }
 
-  // Derive this tree, recursive
-Node* Node::derive(std::string variable,Node* node, Node* newNode )
- {		 std::cout<<"derive funcion initialized"<<std::endl;
+ // differentiate this tree, recursive
+Node* Node::differentiate(std::string variable,Node* node, Node* newNode )
+ {		 std::cout<<"differentiate funcion initialized"<<std::endl;
 		char dataNode=node->getOperator();
 		 std::cout<<"dataNode="<<dataNode<<std::endl;
 		   switch(dataNode)   //test every operator - if number, variable or mult, go to a method
 		   {				
 			case  '+':	
-				std::cout<<" + detected"<<std::endl;
-				addDerive(variable,node, newNode);
+				addDifferentiate(variable,node, newNode);
 				break;
 			case '-':
-				std::cout<<" - detected"<<std::endl;
-				subDerive(variable,node, newNode);
+				subDifferentiate(variable,node, newNode);
 				break;
 			case 'n':
 				if(node->getData()==variable){
-					std::cout<<" variable detected"<<std::endl;
 					newNode->setData("1");
 				}
 				else
 				{
-					std::cout<<" number detected"<<std::endl;
 					newNode->setData("0");
 				}
 				break;
 			case '*' :	
-				multDerive(variable,node,newNode);			
+				multDifferentiate(variable,node,newNode);			
 				break;
 			case '/':
-				divDerive(variable,node,newNode);
+				divDifferentiate(variable,node,newNode);
 				break;
 			case  '^':	
-				std::cout<<" ^ detected"<<std::endl;
-				powDerive(variable,node, newNode);
+				powDifferentiate(variable,node, newNode);
 				break;
 			case '%':
-				std::cout<<"cos detected"<<std::endl;
-				cosDerive(variable,node,newNode);
+				cosDifferentiate(variable,node,newNode);
 				break;
 			case '#': 
-				std::cout<<"sin detected"<<std::endl;
-				sinDerive(variable,node,newNode);
+				sinDifferentiate(variable,node,newNode);
+				break;
+			case '&': 
+				lnDifferentiate(variable,node,newNode);
 				break;
 			default:
-				newNode->setData("0");
+				throw std::invalid_argument("Node contains illegal character");
 				break;
 			}
-	std::cout<<"switch sentance done"<<std::endl;
-	std::cout<<"newNode="<<newNode->getData()<<std::endl;
+
 return newNode;
  }
 
+//copies a tree nodewise recursive 
 Node* Node::copyNodeTree(Node* node)
 {
 	Node* newNode=new Node();
@@ -203,49 +189,42 @@ Node* Node::copyNodeTree(Node* node)
 	}
 return newNode;
 }
-void Node::addDerive(std::string var,Node* node, Node* newNode)
+Expression Node::toExpression(){
+  // TODO: Implement!
+  return Expression("a+b*sin(d)");
+ }
+ 
+ //differentiate additions
+void Node::addDifferentiate(std::string var,Node* node, Node* newNode)
 {
-	
 	//Copying the values of right and left child node to save for later use 
 	Node* rightTree = copyNodeTree(node->getRight()); 	 
 	Node* leftTree = copyNodeTree(node->getLeft());
 
 	//creating new tree
 	newNode->setData("+");
-	newNode->setLeft(derive(var,leftTree,new Node()),newNode); //putting the left child node to the derived value
-	newNode->setRight(derive(var,rightTree,new Node()),newNode); //putting the right child node to the derived value
+	newNode->setLeft(differentiate(var,leftTree,new Node()),newNode); //putting the left child node to the differentiated value
+	newNode->setRight(differentiate(var,rightTree,new Node()),newNode); //putting the right child node to the differentiated value
 
-	}
-Expression Node::toExpression(){
-  // TODO: Implement!
-  return Expression("a+b*sin(d)");
 }
-
-void Node::subDerive(std::string var,Node* node, Node* newNode)
+//differentiate subtraction
+void Node::subDifferentiate(std::string var,Node* node, Node* newNode)
 {
-	//Putting top nod to -
+	//Putting top nod to "-"
 	newNode->setData("-");
 
 	//Copying the values of right and left child node to save for later use 
 	Node* rightTree = copyNodeTree(node->getRight()); 	 
 	Node* leftTree = copyNodeTree(node->getLeft());
 
-	//creating new tree with derived values
-	newNode->setLeft(derive(var,leftTree,new Node()),newNode); //putting the left-right child node to the derived value
-	newNode->setRight(derive(var,rightTree,new Node()),newNode); //putting the left-right child node to the derived value
+	//creating new tree with differentiated values
+	newNode->setLeft(differentiate(var,leftTree,new Node()),newNode); //putting the left-right child node to the differentiated value
+	newNode->setRight(differentiate(var,rightTree,new Node()),newNode); //putting the left-right child node to the differentiated value
 
 }
-void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)=f'*g +g'*f
+//differentiate mutiplication
+void Node::multDifferentiate(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)=f'*g +g'*f
 { 
-	// if multiplied with cero-> put branch to + 0 to prevent infinite loop
-	if(node->getRight()->getData()== "0" || node->getRight()->getData()=="0")
-	{
-		newNode->setData("+");
-		newNode->setRight((new Node()),newNode);
-		newNode->getRight()->setData("0");
-		newNode->setLeft((new Node()),newNode);
-		newNode->getLeft()->setData("0");
-	}
 	//Putting top nod to +
 	newNode->setData("+");
 	//Copying the values of right and left child node to save for later use 
@@ -261,13 +240,13 @@ void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)
 	newNode->getLeft()->setData("*");
 
 	newNode->getLeft()->setLeft(leftTree,newNode->getLeft());   //put left-left child tree to copied tree (the one not derivated)
-	newNode->getRight()->setLeft(derive(var,leftTree,new Node()),newNode->getRight()); //putting the left-right child node to the derived value
-	newNode->getLeft()->setRight(derive(var,rightTree,new Node()),newNode->getLeft()); //putting the left-right child node to the derived value
+	newNode->getRight()->setLeft(differentiate(var,leftTree,new Node()),newNode->getRight()); //putting the left-right child node to the differentiated value
+	newNode->getLeft()->setRight(differentiate(var,rightTree,new Node()),newNode->getLeft()); //putting the left-right child node to the differentiated value
 	newNode->getRight()->setRight(rightTree,newNode->getRight()); //put right-right child tree to copied tree (the one not derivated)
 
 }
-
- void Node::divDerive(std::string var, Node* node, Node* newNode) //rule: (f/g)'= (f'g-fg')/(g*g)
+//differentiate divisions
+ void Node::divDifferentiate(std::string var, Node* node, Node* newNode) //rule: (f/g)'= (f'g-fg')/(g*g)
  {
 	//Putting top nod to /
 	newNode->setData("/");
@@ -302,13 +281,13 @@ void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)
 	leftLeft->setRight(rightTree2,leftLeft);
 	leftRight->setLeft(leftTree,leftRight);
 	//putting the left-left-left node and left-right-right node to f' and g'
-	leftLeft->setLeft(derive(var,leftTree,new Node()),leftLeft);
-	leftRight->setRight(derive(var,rightTree1,new Node()),leftRight);
+	leftLeft->setLeft(differentiate(var,leftTree,new Node()),leftLeft);
+	leftRight->setRight(differentiate(var,rightTree1,new Node()),leftRight);
 	std::cout<<"derivation of div done"<<std::endl;
 	
  } 
- 
- void Node::powDerive(std::string var,Node* node, Node* newNode)//Rule: (f^g)'=f^g(f'(g/f)+g'
+ //differentiate power
+ void Node::powDifferentiate(std::string var,Node* node, Node* newNode)//Rule: (f^g)'=f^g(f'(g/f)+g'
  {
 	//Putting top nod to *
 	newNode->setData("*");
@@ -339,7 +318,7 @@ void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)
 	newNode->getRight()->setLeft(new Node(),newNode->getRight());
 	Node* rightLeft=newNode->getRight()->getLeft(); //RL
 	rightLeft->setData("*"); //RL
-	rightLeft->setLeft(derive(var,leftTree1,new Node()),rightLeft); // RLL
+	rightLeft->setLeft(differentiate(var,leftTree1,new Node()),rightLeft); // RLL
 	rightLeft->setRight(new Node(),rightLeft); //RLR
 	rightLeft->getRight()->setData("/"); //RLR
 	rightLeft->getRight()->setLeft(rightTree2,rightLeft->getRight()); //RLRL
@@ -349,19 +328,20 @@ void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)
 	newNode->getRight()->setRight(new Node(),newNode->getRight());
 	Node* rightRight=newNode->getRight()->getRight(); //RR
 	rightRight->setData("*"); //RR
-	rightRight->setLeft(derive(var,rightTree1,new Node()),rightRight); //RRL
+	rightRight->setLeft(differentiate(var,rightTree1,new Node()),rightRight); //RRL
 	rightRight->setRight(new Node(),rightRight); //creating node RRR
 	Node* rightRightRight=rightRight->getRight();
 	rightRightRight->setData("&"); //& representing ln,  RRR
 	rightRightRight->setLeft(new Node(),rightRightRight);
-	rightRightRight->getLeft()->setData(" "); //node filled with " " RRRL
+	rightRightRight->getLeft()->setData(""); // RRRL empty node
 	rightRightRight->setRight(leftTree3,rightRightRight); // RRRR
 
 	std::cout<<"derivation of pow done"<<std::endl;
 
  }
-
-void Node::cosDerive(std::string var, Node* node, Node* newNode){ //rule: (cos(f))'=sin(f)*-f'
+ 
+//differentiate cos
+void Node::cosDifferentiate(std::string var, Node* node, Node* newNode){ //rule: (cos(f))'=sin(f)*-f'
 	//Putting top nod to *
 	newNode->setData("*");
 		//Copying the values of right child node to save for later use 
@@ -372,16 +352,18 @@ void Node::cosDerive(std::string var, Node* node, Node* newNode){ //rule: (cos(f
 	newNode->getRight()->setData("#"); //R
 	newNode->getRight()->setRight(rightTree,newNode->getRight()); //RR
 	newNode->getRight()->setLeft(new Node(),newNode->getRight());
-	newNode->getRight()->getLeft()->setData(" "); //RL
+	newNode->getRight()->getLeft()->setData(""); //RL empty node
+	
 	newNode->setLeft(new Node(),newNode);
 	newNode->getLeft()->setData("-"); //L
 	newNode->getLeft()->setLeft(new Node(),newNode->getLeft());	
 	newNode->getLeft()->getLeft()->setData("0");
-	newNode->getLeft()->setRight(derive(var,rightTree,new Node()),newNode->getLeft());
+	newNode->getLeft()->setRight(differentiate(var,rightTree,new Node()),newNode->getLeft());
 	
 
 }
-void Node::sinDerive(std::string var, Node* node, Node* newNode){//rule: (sin(f))'=cos(f)*f'
+//differentiate sin
+void Node::sinDifferentiate(std::string var, Node* node, Node* newNode){//rule: (sin(f))'=cos(f)*f'
 	//Putting top nod to *
 	newNode->setData("*");
 	
@@ -390,7 +372,26 @@ void Node::sinDerive(std::string var, Node* node, Node* newNode){//rule: (sin(f)
 	//creating and asigning child nodes
 	newNode->setRight(new Node(),newNode);
 	newNode->getRight()->setData("%"); //R
-	newNode->getRight()->setLeft(rightTree,newNode->getRight());
-	newNode->setLeft(derive(var,rightTree,new Node()),newNode); //L
+	newNode->getRight()->setRight(rightTree,newNode->getRight()); //RR
+	newNode->getRight()->setLeft(new Node(),newNode);
+	newNode->getRight()->getLeft()->setData(""); //RL empty node
+	
+	newNode->setLeft(differentiate(var,rightTree,new Node()),newNode); //L
+}
+
+//differentiate ln
+void Node::lnDifferentiate(std::string var, Node* node, Node* newNode) //(ln(f)'= f'/f
+{
+	//Putting top nod to /
+	newNode->setData("/");
+	
+	//Copying the values of right child node to save for later use 
+	Node* rightTree = copyNodeTree(node->getRight()); //f	
+	
+	//creating and asigning child nodes
+	newNode->setRight(rightTree,newNode); //R
+	newNode->setLeft(differentiate(var,rightTree,new Node()),newNode); //L
+
+
 }
   
