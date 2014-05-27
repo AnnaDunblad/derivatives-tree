@@ -62,6 +62,9 @@ class Node{
 	void divDerive(std::string var,Node* node, Node* newNode); //derive divisions
 	void addDerive(std::string var, Node* node, Node* newNode);
 	void subDerive(std::string var, Node* node, Node* newNode);
+	void powDerive(std::string var,Node* node, Node* newNode);
+	void cosDerive(std::string var, Node* node, Node* newNode);
+	void sinDerive(std::string var,Node* node, Node* newNode);
 
 
 	static Node* copyNodeTree(Node* node);
