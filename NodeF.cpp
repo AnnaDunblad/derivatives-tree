@@ -9,7 +9,7 @@ void Node::shorten(){
 
 // Shorten the tree below /node/
 int Node::shorten(Node* node){
-  
+
   // Shorten the children first (Note: Since it's a binary tree each node either have both or none children, so just check for one)
   if(node->getRight()){ 
     node->getRight()->shorten();
@@ -57,9 +57,9 @@ int Node::shorten(Node* node){
     delete node->getRight();
     Node* tmp = node->getLeft(); // Need to access getLeft() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
     
-    node->setData(node->getLeft()->getData());
-    node->setRight(node->getLeft()->getRight(), node);
-    node->setLeft(node->getLeft()->getLeft(), node);
+    node->setData(tmp->getData());
+    node->setRight(tmp->getRight(), node);
+    node->setLeft(tmp->getLeft(), node);
     
     delete tmp;
     return 1;
@@ -71,12 +71,12 @@ int Node::shorten(Node* node){
   // --------------------------------------------------------------
   else if(node->getLeft()->getData()=="1" && node->getOperator()=='*'){
     
-    delete node->getLeft();    
+    delete node->getLeft();
     Node* tmp = node->getRight(); // Need to access getRight() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
     
-    node->setData(node->getRight()->getData());
-    node->setRight(node->getRight()->getRight(), node);
-    node->setLeft(node->getRight()->getLeft(), node);
+    node->setData(tmp->getData());
+    node->setLeft(tmp->getLeft(), node); 
+    node->setRight(tmp->getRight(), node); 
     
     delete tmp;
     return 1; 
