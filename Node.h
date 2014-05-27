@@ -32,7 +32,6 @@ class Node{
  public: 
 
   Node(); // Empty constructor that we use when creating nodes to three
-  void changeChild(Node*, Node*);
   Node* getRight();
   Node* getLeft();
   void setRight(Node*);
