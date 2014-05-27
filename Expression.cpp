@@ -71,11 +71,9 @@ void Expression::toTreeInternal(Node* currNode, std::string currStr)
   // the currStr doesn't contain any operator
   if(pos==-1){
     currNode->setData(trim(currStr));
-    //std::cout << "nod satt till: "<< currNode->getData() << std::endl;
   }
   else{
     currNode->setData(std::string(1,currStr[pos]));
-    //std::cout << "operand satt till: " << currStr[pos] << std::endl;
     currNode->setRight(new Node(),currNode);
     currNode->setLeft(new Node(),currNode);
     
@@ -113,9 +111,6 @@ int Expression::preProcess()
   // 2. Remove all spaces in the expression, for example (a + b) => (a+b)
   // 3. Add * between letter and number, i.e. 3b=>3*b
   // TODO 4: Unary -
-  // TODO 5: sin, cos, ln
-  std::cout << "Took " << _str << std::endl;
-  
   
   // 5. Replace sin etc. with single charcter because toTree() will have hard to split the string otherwise
   replaceString(_str,"sin","#");
@@ -153,8 +148,6 @@ int Expression::preProcess()
     lastCharacter = _str[i];
   }
   
-  std::cout << "Returned " << _str << std::endl;
-  
   return 0;
 }
 
@@ -167,71 +160,59 @@ int Expression::getHighestPrecedence(std::string str)
   int numberOfParentheses = 0;
   int groundest = 255;
   int groundestPosition = -1;
-  std::cout << "Genomsoker "<<str<<std::endl;
+
   for(int i = str.length()-1; i >= 0; --i) {
     
     switch(str[i]) {
     case '(':
-      std::cout << i << ":" << 4*numberOfParentheses << " ( detected" << std::endl;
       if(numberOfParentheses==0)
 	throw std::invalid_argument("Mismatch of parentheses exception");
       numberOfParentheses--; // OBS, the loop is in reverse order to make 5/3*4 appear (5/3)*4
       break;
+
     case ')':
-      std::cout << i << ":"<< 4*numberOfParentheses <<" ) detected" << std::endl;
-      numberOfParentheses++;
+        numberOfParentheses++;
       break;
+
     case '&':
     case '%':
     case '#':
-      std::cout << i << ":" << 4*numberOfParentheses+3  << " #%& detected" << std::endl;
-      
       // If this is the operator with the highest precedence up to now
       if(4*numberOfParentheses + 3 < groundest) {
 	groundest = 4*numberOfParentheses + 3;
 	groundestPosition = i;
-	std::cout << i << ":" << 4*numberOfParentheses+3  << " groundestPosition = "<< i << std::endl;
       }
       break;
       
     case '^':
-      std::cout << i << ":" << 4*numberOfParentheses+2  << " ^ detected" << std::endl;
-      
       // If this is the operator with the highest precedence up to now
       if(4*numberOfParentheses + 2 < groundest) {
 	groundest = 4*numberOfParentheses + 2;
 	groundestPosition = i;
-	std::cout << i << ":" << 4*numberOfParentheses+2  << " groundestPosition = "<< i << std::endl;
       }
       break;
       
     case '*':
     case '/':
-      std::cout << i << ":" << 4*numberOfParentheses+1  << " */ detected" << std::endl;
-      
       // If this is the operator with the highest precedence up to now
       if(4*numberOfParentheses + 1 < groundest){
 	groundest = 4*numberOfParentheses + 1;
 	groundestPosition = i;
-	std::cout << i << ":" << 4*numberOfParentheses+1  << " groundestPosition = "<< i << std::endl;
       }
       break;
+
     case '+':
     case '-': //TODO: Don't return unary - signs as precedece value
-      std::cout << i << ":" << 4*numberOfParentheses  << " +- detected" << std::endl;
-      
       // If this is the operator with the highest precedence up to now
       if(4*numberOfParentheses < groundest){
 	groundest = 4*numberOfParentheses;
 	groundestPosition = i;
-	std::cout << i << ":" << 4*numberOfParentheses  << " groundestPosition = "<<i<<std::endl;
       }
     default: 
       // Number (or variable detected)
       break;
     }
   }
-  std::cout << std::endl;
   return groundestPosition;
 }
 
