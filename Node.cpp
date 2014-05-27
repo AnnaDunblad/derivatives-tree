@@ -91,8 +91,7 @@ void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) 
 	
 	printTreeInternal(newNodes, level + 1, maxLevel);
 }
-
-
+i
 int Node::maxLevel(Node* node){
   if (node == NULL)
     return 0;
@@ -116,9 +115,8 @@ Node* Node::differentiate(std::string var)
 
  // differentiate this tree, recursive
 Node* Node::differentiate(std::string variable,Node* node, Node* newNode )
- {		 std::cout<<"differentiate funcion initialized"<<std::endl;
+ {
 		char dataNode=node->getOperator();
-		 std::cout<<"dataNode="<<dataNode<<std::endl;
 		   switch(dataNode)   //test every operator - if number, variable or mult, go to a method
 		   {				
 			case  '+':	
@@ -176,8 +174,10 @@ Node* Node::copyNodeTree(Node* node)
 	}
 return newNode;
 }
-Expression Node::toExpression(){
-  // TODO: Implement!
+Expression Node::toExpression(Node* newNode){
+	Node* topNode=newNode;
+	//ToDo
+	
   return Expression("a+b*sin(d)");
  }
  
