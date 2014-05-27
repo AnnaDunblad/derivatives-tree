@@ -91,7 +91,6 @@ void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) 
 	
 	printTreeInternal(newNodes, level + 1, maxLevel);
 }
-i
 int Node::maxLevel(Node* node){
   if (node == NULL)
     return 0;
@@ -174,9 +173,8 @@ Node* Node::copyNodeTree(Node* node)
 	}
 return newNode;
 }
-Expression Node::toExpression(Node* newNode){
-	Node* topNode=newNode;
-	//ToDo
+Expression Node::toExpression(){
+
 	
   return Expression("a+b*sin(d)");
  }
