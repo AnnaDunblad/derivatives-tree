@@ -20,8 +20,9 @@ void print(Node* tree)
 
 
 
-int main()
-{
+
+int main(int argc, char* argv[])
+{ 
   // Variable used to make menu selections
   int selection;
   // Variable hold the filename to file
@@ -36,75 +37,170 @@ int main()
   std::string var;
   // Line when reading files
   std::string line;
- 
-
-
-
+  
+  
+  
   std::cout << "Welcome to the automatic derivative calculator" << std::endl;
   
-
-  // ------------------------------------------
-  // Ask the user for a (or several) expressions
-  // ------------------------------------------  
- newExpression:
-  do{
-    std::cout << "Where do you have the expressions?"<< std::endl;
-    std::cout << "1. File"<<std::endl<<"2. Terminal"<<std::endl;
-    std::cin >> selection; 
-  }while(selection < 1 || selection>2);
-  
-  switch(selection){
-  case 1:
+  if(argc>1){
     // ------------------------------------------
-    //        Read file with expressions 
-    // ------------------------------------------
-    do{
-      std::cout << "Enter a valid filename to a file with expressions (one expression/line):"<<std::endl;
-      std::cin >> filename;
-      file.open(filename.c_str(), std::ios::in);
-    }while(!file.is_open());
-
+    //   Read file passed as program parameter
+    // ------------------------------------------  
+    file.open(argv[1], std::ios::in);
+    if(!file.is_open()){
+      std::cout << "Input file not found!" << std::endl;
+      return -1;
+    }
     while(getline(file, line)){
       trees.push_back(Expression(line).toTree());
       std::cout << trees.back()->toExpression().toString() << " added."<<std::endl;
     }
     file.close();
-    break;
     
+  }else{
+    // ------------------------------------------
+    // Ask the user for a (or several) expressions
+    // ------------------------------------------  
+  newExpression:
+    do{
+      std::cout << "Where do you have the expressions?"<< std::endl;
+      std::cout << "1. File"<<std::endl<<"2. Terminal"<<std::endl;
+      std::cin >> selection; 
+    }while(selection < 1 || selection>2);
     
-  case 2:
-    // ------------------------------------------
-    //       Ask the user for an expression
-    // ------------------------------------------
-    std::cout << "Enter a expression:" <<std::endl;
-    std::string exp;
-    std::cin >> exp;
-    trees.push_back(Expression(exp).toTree());
-    break;
+    switch(selection){
+    case 1:
+      // ------------------------------------------
+      //        Read file with expressions 
+      // ------------------------------------------
+      do{
+	std::cout << "Enter a valid filename to a file with expressions (one expression/line):"<<std::endl;
+	std::cin >> filename;
+	file.open(filename.c_str(), std::ios::in);
+      }while(!file.is_open());
+      
+      while(getline(file, line)){
+	trees.push_back(Expression(line).toTree());
+	std::cout << trees.back()->toExpression().toString() << " added."<<std::endl;
+      }
+      file.close();
+      break;
+      
+      
+    case 2:
+      // ------------------------------------------
+      //       Ask the user for an expression
+      // ------------------------------------------
+      std::cout << "Enter a expression:" <<std::endl;
+      std::string exp;
+      std::cin >> exp;
+      trees.push_back(Expression(exp).toTree());
+      break;
+    }
+    
   }
   
 
-
-
-
-  // ------------------------------------------
-  //  Ask the user how to display expressions
-  // ------------------------------------------  
- newViz:
-  do{
-    std::cout << "How do you prefer the visualizing of expressions?" <<std::endl;
-    std::cout << "1. Tree " << std::endl << "2. String" <<std::endl;
-    std::cin >> selection;
-  }while(selection<1 || selection > 2);
-  treeViz = selection==1; 
+  if(argc>1){
+    // ------------------------------------------
+    //     When using command line default is 
+    //         the string representation
+    // ------------------------------------------
+    std::cout << "Will display expressions as strings." << std::endl;
+    treeViz = false;
+  }else{
+    // ------------------------------------------
+    //  Ask the user how to display expressions
+    // ------------------------------------------
+  newViz:
+    do{
+      std::cout << "How do you prefer the visualizing of expressions?" <<std::endl;
+      std::cout << "1. Tree " << std::endl << "2. String" <<std::endl;
+      std::cin >> selection;
+    }while(selection<1 || selection > 2);
+    treeViz = selection==1; 
+  }
   
+  
+  
+  // ------------------------------------------
+  //  If we are using the command line interface
+  // ------------------------------------------
+  if(argc>1){
+    
+    // Where do we want to save the expressions? 
+    if(argc>2)
+      // Save the data to another file
+      file.open(argv[2], std::ios::out | std::ios::trunc);
+    else
+      // Save the data to same as input (overwrites the data)
+      file.open(argv[1], std::ios::out | std::ios::trunc);
+    
+    
+    // Print message if we don't apply shorting!
+    if(argc>3 && std::string(argv[3]) == "-ns"){
+      std::cout << "Does not short expression" << std::endl;
+    }
+    
+    
+    // For every expression currently loaded in the vector
+    for(unsigned int i = 0; i < trees.size(); i++) {
+      
+      // Short expression (if not -ns flag provided)
+      if(!(argc>3 && std::string(argv[3]) == "-ns"))
+	trees[i]->shorten();
+      
+      
+      std::cout << "Will differentiate " << i+1 << ": " << trees[i]->toExpression().toString()<< std::endl;
+      variables.clear();
+      // Get all variables existing in the current tree
+      trees[i]->getVariables(variables);
+      // If the tree didn't contain any variable I just pass x as dummy variable
+      if(variables.empty()){
+	var="x";
+      }
+      // If the tree just has one variable we don't need to bother the user with a question, just use the variable
+      else if(variables.size()==1){
+	std::cout << "Differentiate with respect on " << variables.begin()->first << std::endl;
+	var = variables.begin()->first;
+      }
+      // If the tree has several variables we need to ask which one the user want to derive with respect on
+      else{
+	do{
+	  std::cout << "Differentiate with respect on variable?" << std::endl;
+	  for(std::map<std::string,float>::iterator it=variables.begin(); it!=variables.end(); ++it){
+	    std::cout << it->first << std::endl;
+	  }
+	  std::cin >> var;
+	  
+	  // Loop until the user picks a existing variable
+	}while(variables.find(var) == variables.end());
+      }
+      // Differentiate the expression
+      trees[i] = trees[i]->derive(var);
 
+      // Short expression (if not -ns flag provided)
+      if(!(argc>3 && std::string(argv[3]) == "-ns"))
+	trees[i]->shorten();
+      
 
+      
+      std::string derivata = trees[i]->toExpression().toString();
+      file << derivata << std::endl;
+      std::cout << "Saved expression " << i+1 << ": " << derivata << std::endl;
+    }
+    file.close();
+  }
 
-
-
+  // Reset the cout, like no parameter was passed (because we don't want to enter this if once more)
+  argc = 1; 
+  
+  
+  
+  
   // NOTE: Exits loop by using goto (This is the last remaining stronghold for the use of goto)
-  while(true){ 
+  while(true){
+   
   // ------------------------------------------
   // Ask the user how to manipulate expression
   // ------------------------------------------  
