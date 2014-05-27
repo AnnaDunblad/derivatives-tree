@@ -312,7 +312,7 @@ int main(int argc, char* argv[])
       std::cin >> filename;
       file.open(filename.c_str(), std::ios::out | std::ios::trunc);
       for(unsigned int i = 0; i < trees.size(); i++) {
-	file << trees[i]->toExpression();
+	file << trees[i]->toExpression() << std::endl;
 	std::cout << "Saved expression " << i+1 <<"."<< std::endl; 
       }
       file.close();
