@@ -42,8 +42,8 @@ int Node::shorten(Node* node){
     
     delete node->getRight();
     delete node->getLeft();
-    node->setRight(NULL, node);
-    node->setLeft(NULL, node);
+    node->setRight(NULL);
+    node->setLeft(NULL);
     
     return 1;
   }
@@ -58,8 +58,8 @@ int Node::shorten(Node* node){
     Node* tmp = node->getLeft(); // Need to access getLeft() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
     
     node->setData(tmp->getData());
-    node->setRight(tmp->getRight(), node);
-    node->setLeft(tmp->getLeft(), node);
+    node->setRight(tmp->getRight());
+    node->setLeft(tmp->getLeft());
     
     delete tmp;
     return 1;
@@ -75,8 +75,8 @@ int Node::shorten(Node* node){
     Node* tmp = node->getRight(); // Need to access getRight() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
     
     node->setData(tmp->getData());
-    node->setLeft(tmp->getLeft(), node); 
-    node->setRight(tmp->getRight(), node); 
+    node->setLeft(tmp->getLeft()); 
+    node->setRight(tmp->getRight()); 
     
     delete tmp;
     return 1; 
@@ -100,8 +100,8 @@ int Node::shorten(Node* node){
     case '+':
       // Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
       node->setData(otherChild->getData());
-      node->setRight(otherChild->getRight(),node);
-      node->setLeft(otherChild->getLeft(),node);
+      node->setRight(otherChild->getRight());
+      node->setLeft(otherChild->getLeft());
       // Delete the other node
       delete otherChild;
       break;
@@ -125,8 +125,8 @@ int Node::shorten(Node* node){
       // ... remove the other child as well
       delete otherChild;
       node->setData("0");
-      node->setRight(NULL, node);
-      node->setLeft(NULL, node);
+      node->setRight(NULL);
+      node->setLeft(NULL);
       break;
     }
     
@@ -165,16 +165,6 @@ float Node::doOperation(float left, char op, float right)
     return log(right); // Note this is the natural logarithm
   }
   return 0;
-}
-
-// TODO: Remove this method, if still unused when everything works!
-Node* Node::getParent()
-{
-  return _parent;
-}
-void Node::setParent(Node* parent)
-{
-  _parent = parent;
 }
 
 // Return the operator, and n if the node contains data
