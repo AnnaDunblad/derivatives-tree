@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
 	}while(variables.find(var) == variables.end());
       }
       // Differentiate the expression
-      trees[i] = trees[i]->derive(var);
+      trees[i] = trees[i]->differentiate(var);
 
       // Short expression (if not -ns flag provided)
       if(!(argc>3 && std::string(argv[3]) == "-ns"))
@@ -185,9 +185,9 @@ int main(int argc, char* argv[])
       
 
       
-      std::string derivata = trees[i]->toExpression().toString();
-      file << derivata << std::endl;
-      std::cout << "Saved expression " << i+1 << ": " << derivata << std::endl;
+      std::string derivada = trees[i]->toExpression().toString();
+      file << derivada << std::endl;
+      std::cout << "Saved expression " << i+1 << ": " << derivada << std::endl;
     }
     file.close();
   }
