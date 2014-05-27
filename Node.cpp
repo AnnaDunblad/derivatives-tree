@@ -361,12 +361,24 @@ void Node::multDerive(std::string var,Node* node, Node* newNode) 	//rule: D(f*g)
 
  }
 
-void Node::cosDerive(std::string var, Node* node, Node* newNode){ //rule: (cos(f))'=-sin(f)*f'
+void Node::cosDerive(std::string var, Node* node, Node* newNode){ //rule: (cos(f))'=sin(f)*-f'
 	//Putting top nod to *
 	newNode->setData("*");
+		//Copying the values of right child node to save for later use 
+	Node* rightTree = copyNodeTree(node->getRight()); //f
+	
 	//creating and asigning child nodes
 	newNode->setRight(new Node(),newNode);
+	newNode->getRight()->setData("#"); //R
+	newNode->getRight()->setRight(rightTree,newNode->getRight()); //RR
+	newNode->getRight()->setLeft(new Node(),newNode->getRight());
+	newNode->getRight()->getLeft()->setData(" "); //RL
 	newNode->setLeft(new Node(),newNode);
+	newNode->getLeft()->setData("-"); //L
+	newNode->getLeft()->setLeft(new Node(),newNode->getLeft());	
+	newNode->getLeft()->getLeft()->setData("0");
+	newNode->getLeft()->setRight(derive(var,rightTree,new Node()),newNode->getLeft());
+	
 
 }
 void Node::sinDerive(std::string var, Node* node, Node* newNode){//rule: (sin(f))'=cos(f)*f'
