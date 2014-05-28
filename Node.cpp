@@ -181,20 +181,30 @@ std::string Node::toString()
 }
 //from tree to string
 std::string Node::toString(Node* node){ 
+
+std::cout<<"node="<<node->getData()<<std::endl;
+if(node->getLeft()!=NULL)
+	std::cout<<"node->getLeft()="<<node->getLeft()->getData()<<std::endl;
  
 	if(!node->getLeft() || !node->getRight()) //if tree is only of one node, return this
 			return node->getData();
 			
 	//put paranthesis around expressions with operator + or -
 
-	if((node->getData()=="-" || getLeft()->getData()=="+") && (getLeft()->getLeft()!=NULL || getRight()->getRight()!=NULL))
-	{
+	if((node->getData()=="-" || node->getData()=="+") && (node->getLeft()->getLeft()!=NULL || node->getRight()->getRight()!=NULL))
 		return  "(" + toString(node->getLeft()) + node->getOperator() + toString(node->getRight())+ ")";
-	}
+
+	
+	if((node->getData()=="^" || node->getData()=="/") && (node->getLeft()->getData()=="+" || node->getLeft()->getData()=="-"))
+		return   "((" + toString(node->getLeft()) + ")" + node->getOperator() + toString(node->getRight()) + ")"  ;
+		
+	if((node->getData()=="^" || node->getData()=="/") && (node->getRight()->getData()=="+" || node->getRight()->getData()=="-"))
+		return  toString(node->getLeft())  + node->getOperator() + "(" + toString(node->getRight()) + ")";
+
 				
 	if(node->getData()=="&" || node->getData()=="%" || node->getData()=="#")
 	{	
-		std::string OP;		
+		std::string op;		
 		switch(node->getOperator())
 		{
 			case '&':
@@ -204,18 +214,37 @@ std::string Node::toString(Node* node){
 				OP=  "cos";
 				break;
 			case '#':
-				OP=  "sin";
+				OP= "sin";
 				break;
 			default:
 				OP=node->getData();
 				break;	
 		}
-		return toString(node->getLeft()) +  OP  + "(" + toString(node->getRight()) +")";		
+		return toString(node->getLeft()) +  op  + "(" + toString(node->getRight()) +")";		
 	}
 	else
 		return toString(node->getLeft()) +  node->getData()  + toString(node->getRight());
 }
  
+ int getOpPrio(char op){
+	switch(op) 
+	{
+		case '+':
+		case '-':
+			return 1;
+		case '*':
+		case '/': 
+			return 2;
+		case '^':
+			return 3;
+		case '%':
+		case '&':
+		case '#':
+			return 4;
+		default:
+			return 0;	
+	}
+ }
 
  
  //differentiate additions
