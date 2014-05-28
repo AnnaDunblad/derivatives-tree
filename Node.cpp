@@ -5,8 +5,6 @@ Node::Node()
 {
   _leftChildren = NULL;
   _rightChildren = NULL;
- i=0;
-
 	}
 
 void Node::setData(float data){
@@ -176,56 +174,47 @@ Node* Node::copyNodeTree(Node* node)
 return newNode;
 }
 
-
-Expression Node::toExpression()
-{ 
-	return toExpression(this);
+//overload function turn tree to string
+std::string Node::toExpression()
+{ 	
+	return  toExpression(this);
 }
-std::string Node::toExpression(Node* node){ //expression = leftTree parentNode rightTree
-	 
-
-	expression.insert(i,node->getData());
-	std::cout<<"insert="<<node->getData()<<" ,before pos="<<i<<std::endl;
-	std::cout<<"Expression1="<<expression<<std::endl;
-
-
-	if(node->getRight()|| node->getLeft()) //if have children
-	{
-	expression+=node->getRight()->getData();
-		std::cout<<"Expression2="<<expression<<std::endl;
-	expression.insert(i,node->getLeft()->getData());
-		std::cout<<"Expression3="<<expression<<std::endl;
-
-
-		if (node->getLeft()->getLeft())
-		{	
-
-			toExpression(node->getLeft()->getLeft());
-			std::cout<<"Expression4="<<expression<<std::endl;
-				i++;
-				i++;
-				expression.insert(i,node->getLeft()->getRight()->getData());
-				std::cout<<"insert="<<node->getLeft()->getRight()->getData()<<" ,before pos="<<i<<std::endl;
-				std::cout<<"Expression6="<<expression<<std::endl;
-			//if have child, break. Else return
-		}
-
-		if(node->getRight()->getRight())
-		{		
-			toExpression(node->getRight()->getLeft());
-			std::cout<<"Expression6="<<expression<<std::endl;
-			expression+=node->getRight()->getLeft()->getData();
-			i++;
-			
-			std::cout<<"add to expression="<<node->getRight()->getLeft()->getData()<<std::endl;
-			std::cout<<"Expression7="<<expression<<std::endl;
-		}
-	}
-			std::cout<<"Expression8="<<expression<<std::endl;
-
+//turn tree to string
+std::string Node::toExpression(Node* node){ 
+ 
+	if(!node->getLeft() || !node->getRight()) //if tree is only of one node, return this
+			return node->getData();
 	
-	return expression;
- }
+	if(node->getData()=="+" || node->getData()=="-") //put paranthesis around expressions with operator + or -
+			return "(" + toExpression(node->getLeft()) + node->getOperator() + toExpression(node->getRight())+ ")";
+			
+	
+	if(node->getData()=="^" && node->getRight()->getRight()!=NULL && node->getRight()->getData()!="+" && node->getRight()->getData()!="-" )
+		return  toExpression(node->getLeft()) + node->getOperator() +"(" + toExpression(node->getRight())+ ")";
+			
+	if(node->getData()=="&" || node->getData()=="%" || node->getData()=="#")
+	{	
+		std::string OP;		
+		switch(node->getOperator())
+		{
+			case '&':
+				OP=  "ln";
+				break;
+			case  '%':
+				OP=  "cos";
+				break;
+			case '#':
+				OP=  "sin";
+				break;
+			default:
+				OP=node->getData();
+				break;	
+		}
+		return toExpression(node->getLeft()) +  OP  + "(" + toExpression(node->getRight()) +")";		
+	}
+	else
+		return toExpression(node->getLeft()) +  node->getData()  + toExpression(node->getRight());
+}
  
 
  
