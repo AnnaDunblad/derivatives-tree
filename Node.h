@@ -56,9 +56,8 @@ class Node{
 	Node* differentiate(std::string var);   //overload method to return result of differentiate
 	
 	static Node* copyNodeTree(Node* node); //copies a tree nodewise recursive 
-	Expression  toExpression(); //overload method to return result of toExpression
-	 std::string expression;
-	 int i;
+	std::string  toExpression(); //overload method to return result of toExpression
+
 
 	
 	void addDifferentiate(std::string var, Node* node, Node* newNode); //differentiate additions
