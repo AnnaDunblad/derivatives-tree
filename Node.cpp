@@ -187,18 +187,10 @@ std::string Node::toString(Node* node){
 			
 	//put paranthesis around expressions with operator + or -
 
-	if(node->getData()=="*" && (getLeft()->getData()=="+" || getLeft()->getData()=="-") && getLeft()->getLeft()!=NULL)
+	if((node->getData()=="-" || getLeft()->getData()=="+") && (getLeft()->getLeft()!=NULL || getRight()->getRight()!=NULL))
 	{
-		std::cout<<"node="<<node->getData()<<std::endl;
-	 return "(" + toString(node->getLeft()) +  node->getOperator() + toString(node->getRight()) + ")";
-	 }
-	 
-	 
-	 	if(node->getData()=="*" && (getRight()->getData()=="+" || getRight()->getData()=="-" ) && getRight()->getRight()!=NULL)
-		{
-		std::cout<<"node="<<node->getData()<<std::endl;
-	 return "("+  toString(node->getLeft()) +  node->getOperator() +  toString(node->getRight()) + ")";
-	 }
+		return  "(" + toString(node->getLeft()) + node->getOperator() + toString(node->getRight())+ ")";
+	}
 	 
 	 
 	 
