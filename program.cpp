@@ -15,7 +15,7 @@ void print(Node* tree)
   if(treeViz)
     tree->printTree();
   else
-    std::cout << tree->toExpression() << std::endl;
+    std::cout << tree->toString() << std::endl;
 }
 
 
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
     }
     while(getline(file, line)){
       trees.push_back(Expression(line).toTree());
-      std::cout << trees.back()->toExpression() << " added."<<std::endl;
+      std::cout << trees.back()->toString() << " added."<<std::endl;
     }
     file.close();
     
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
       
       while(getline(file, line)){
 	trees.push_back(Expression(line).toTree());
-	std::cout << trees.back()->toExpression() << " added."<<std::endl;
+	std::cout << trees.back()->toString() << " added."<<std::endl;
       }
       file.close();
       break;
@@ -151,7 +151,7 @@ int main(int argc, char* argv[])
 	trees[i]->shorten();
       
       
-      std::cout << "Differentiate expression " << i+1 << ": " << trees[i]->toExpression();
+      std::cout << "Differentiate expression " << i+1 << ": " << trees[i]->toString();
       variables.clear();
       // Get all variables existing in the current tree
       trees[i]->getVariables(variables);
@@ -186,7 +186,7 @@ int main(int argc, char* argv[])
       
 
       
-      Expression derivada = trees[i]->toExpression();
+      Expression derivada = trees[i]->toString();
       file << derivada << std::endl;
       std::cout << "Saved expression " << i+1 << ": " << derivada << std::endl;
     }
@@ -312,7 +312,7 @@ int main(int argc, char* argv[])
       std::cin >> filename;
       file.open(filename.c_str(), std::ios::out | std::ios::trunc);
       for(unsigned int i = 0; i < trees.size(); i++) {
-	file << trees[i]->toExpression() << std::endl;
+	file << trees[i]->toString() << std::endl;
 	std::cout << "Saved expression " << i+1 <<"."<< std::endl; 
       }
       file.close();
