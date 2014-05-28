@@ -1,7 +1,7 @@
 #include "Expression.h"
 
 
-char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^()"; 
+char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^()."; 
 
 
 Expression::Expression(std::string str)
@@ -92,6 +92,7 @@ bool Expression::checkError()
 
   return true;
 }
+
 std::string Expression::toString(){
   std::string str(_str); // Make a new copy of string
   replaceString(str,"#","sin");
