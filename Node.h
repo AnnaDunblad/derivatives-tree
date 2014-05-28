@@ -30,7 +30,7 @@ class Node{
   float getNumber();
   static float doOperation(float,char,float); //calculate value of inserted operators of nodes if not symbolic tree
   Node* differentiate(std::string variable, Node* node, Node* newNode); // differentiate this tree, recursive
-  std::string toExpression(Node* newNode); //turns the resulttree into a string
+  std::string toString(Node* newNode); //turns the resulttree into a string
 
  public: 
 
@@ -56,7 +56,7 @@ class Node{
 	Node* differentiate(std::string var);   //overload method to return result of differentiate
 	
 	static Node* copyNodeTree(Node* node); //copies a tree nodewise recursive 
-	std::string  toExpression(); //overload method to return result of toExpression
+	std::string toString(); //overload method to return result of toExpression
 
 
 	
