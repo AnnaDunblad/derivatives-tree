@@ -186,13 +186,28 @@ std::string Node::toString(Node* node){
 			return node->getData();
 			
 	//put paranthesis around expressions with operator + or -
-	std::cout<<"node="<<node->getData()<<std::endl;
-	if(node->getData()=="+" || node->getData()=="-") 
-			return "(" + toString(node->getLeft()) + node->getOperator() + toString(node->getRight())+ ")";
-			
+
+	if(node->getData()=="*" && (getLeft()->getData()=="+" || getLeft()->getData()=="-") && getLeft()->getLeft()!=NULL)
+	{
+		std::cout<<"node="<<node->getData()<<std::endl;
+	 return "(" + toString(node->getLeft()) +  node->getOperator() + toString(node->getRight()) + ")";
+	 }
+	 
+	 
+	 	if(node->getData()=="*" && (getRight()->getData()=="+" || getRight()->getData()=="-" ) && getRight()->getRight()!=NULL)
+		{
+		std::cout<<"node="<<node->getData()<<std::endl;
+	 return "("+  toString(node->getLeft()) +  node->getOperator() +  toString(node->getRight()) + ")";
+	 }
+	 
+	 
+	 
 	
 	if(node->getData()=="^" && node->getRight()->getRight()!=NULL && node->getRight()->getData()!="+" && node->getRight()->getData()!="-" )
+	{
+		std::cout<<"pow"<<std::endl;
 		return  toString(node->getLeft()) + node->getOperator() +"(" + toString(node->getRight())+ ")";
+	}
 			
 	if(node->getData()=="&" || node->getData()=="%" || node->getData()=="#")
 	{	
@@ -360,8 +375,6 @@ void Node::multDifferentiate(std::string var,Node* node, Node* newNode) 	//rule:
 	rightRightRight->setLeft(new Node());
 	rightRightRight->getLeft()->setData(""); // RRRL empty node
 	rightRightRight->setRight(leftTree3); // RRRR
-
-	std::cout<<"derivation of pow done"<<std::endl;
 
  }
  
