@@ -1,7 +1,7 @@
 #include "Node.h"
 
 
-// Shorten the expression tree from this node (remove zeroes etc.)
+// Shorten the String tree from this node (remove zeroes etc.)
 void Node::shorten(){
   // TODO:  Sometimes we may need to shorten the tree several times 
   shorten(this);
@@ -203,7 +203,7 @@ float Node::getNumber(){
   return number;
 }
 
-// Returns the variables used in this expression (use set because it contains unique elements)
+// Returns the variables used in this String (use set because it contains unique elements)
 void Node::getVariables(std::map<std::string,float>& variables){
 
   // If this is a variable (i.e. has no childs and is not numeric)
