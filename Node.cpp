@@ -163,6 +163,9 @@ return newNode;
 Node* Node::copyNodeTree(Node* node)
 {
 	Node* newNode=new Node();
+	newNode->setRight(new Node());
+	newNode->setLeft(new Node());
+	
 	newNode->setData(node->getData()); //copy first node
 	if(node->getRight()!=NULL && node->getRight()!=NULL)
 	{
