@@ -5,6 +5,8 @@ Node::Node()
 {
   _leftChildren = NULL;
   _rightChildren = NULL;
+ i=0;
+
 	}
 
 void Node::setData(float data){
@@ -173,11 +175,59 @@ Node* Node::copyNodeTree(Node* node)
 	}
 return newNode;
 }
-Expression Node::toExpression(){
+
+
+Expression Node::toExpression()
+{ 
+	return toExpression(this);
+}
+std::string Node::toExpression(Node* node){ //expression = leftTree parentNode rightTree
+	 
+
+	expression.insert(i,node->getData());
+	std::cout<<"insert="<<node->getData()<<" ,before pos="<<i<<std::endl;
+	std::cout<<"Expression1="<<expression<<std::endl;
+
+
+	if(node->getRight()|| node->getLeft()) //if have children
+	{
+	expression+=node->getRight()->getData();
+		std::cout<<"Expression2="<<expression<<std::endl;
+	expression.insert(i,node->getLeft()->getData());
+		std::cout<<"Expression3="<<expression<<std::endl;
+
+
+		if (node->getLeft()->getLeft())
+		{	
+
+			toExpression(node->getLeft()->getLeft());
+			std::cout<<"Expression4="<<expression<<std::endl;
+				i++;
+				i++;
+				expression.insert(i,node->getLeft()->getRight()->getData());
+				std::cout<<"insert="<<node->getLeft()->getRight()->getData()<<" ,before pos="<<i<<std::endl;
+				std::cout<<"Expression6="<<expression<<std::endl;
+			//if have child, break. Else return
+		}
+
+		if(node->getRight()->getRight())
+		{		
+			toExpression(node->getRight()->getLeft());
+			std::cout<<"Expression6="<<expression<<std::endl;
+			expression+=node->getRight()->getLeft()->getData();
+			i++;
+			
+			std::cout<<"add to expression="<<node->getRight()->getLeft()->getData()<<std::endl;
+			std::cout<<"Expression7="<<expression<<std::endl;
+		}
+	}
+			std::cout<<"Expression8="<<expression<<std::endl;
 
 	
-  return Expression("a+b*sin(d)");
+	return expression;
  }
+ 
+
  
  //differentiate additions
 void Node::addDifferentiate(std::string var,Node* node, Node* newNode)

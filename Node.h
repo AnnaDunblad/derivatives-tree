@@ -24,11 +24,14 @@ class Node{
   int maxLevel(Node* node);
   bool isAllElementsNull(std::vector<Node*>);
   void printTreeInternal(std::vector<Node*>, int, int);
-  int shorten(Node*);
+  int shorten(Node*); 
   char getOperator();
   bool isNumeric();
   float getNumber();
-  static float doOperation(float,char,float);
+  static float doOperation(float,char,float); //calculate value of inserted operators of nodes if not symbolic tree
+  Node* differentiate(std::string variable, Node* node, Node* newNode); // differentiate this tree, recursive
+  std::string toExpression(Node* newNode); //turns the resulttree into a string
+
  public: 
 
   Node(); // Empty constructor that we use when creating nodes to three
@@ -48,12 +51,15 @@ class Node{
   // Shorten the expression tree (remove zeroes, remove outermost parenthesis, 
   void shorten();
   
-  
+
+
 	Node* differentiate(std::string var);   //overload method to return result of differentiate
-	Node* differentiate(std::string variable, Node* node, Node* newNode); // differentiate this tree, recursive
 	
 	static Node* copyNodeTree(Node* node); //copies a tree nodewise recursive 
-	Expression toExpression(); //turns the resulttree into a string
+	Expression  toExpression(); //overload method to return result of toExpression
+	 std::string expression;
+	 int i;
+
 	
 	void addDifferentiate(std::string var, Node* node, Node* newNode); //differentiate additions
 	void subDifferentiate(std::string var, Node* node, Node* newNode); //differentiate subtractions
