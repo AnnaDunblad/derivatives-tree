@@ -191,16 +191,7 @@ std::string Node::toString(Node* node){
 	{
 		return  "(" + toString(node->getLeft()) + node->getOperator() + toString(node->getRight())+ ")";
 	}
-	 
-	 
-	 
-	
-	if(node->getData()=="^" && node->getRight()->getRight()!=NULL && node->getRight()->getData()!="+" && node->getRight()->getData()!="-" )
-	{
-		std::cout<<"pow"<<std::endl;
-		return  toString(node->getLeft()) + node->getOperator() +"(" + toString(node->getRight())+ ")";
-	}
-			
+				
 	if(node->getData()=="&" || node->getData()=="%" || node->getData()=="#")
 	{	
 		std::string OP;		
