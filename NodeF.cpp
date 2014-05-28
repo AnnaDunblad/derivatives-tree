@@ -1,7 +1,7 @@
 #include "Node.h"
 
 
-// Shorten the String tree from this node (remove zeroes etc.)
+// Shorten the Expression tree from this node (remove zeroes etc.)
 void Node::shorten(){
   // TODO:  Sometimes we may need to shorten the tree several times 
   shorten(this);

@@ -57,6 +57,7 @@ class Node{
 	
 	static Node* copyNodeTree(Node* node); //copies a tree nodewise recursive 
 	std::string toString(); //overload method to return result of toExpression
+	 int getOpPrio(char op);
 
 
 	

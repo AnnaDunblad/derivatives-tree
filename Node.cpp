@@ -182,51 +182,59 @@ std::string Node::toString()
 //from tree to string
 std::string Node::toString(Node* node){ 
 
-std::cout<<"node="<<node->getData()<<std::endl;
-if(node->getLeft()!=NULL)
-	std::cout<<"node->getLeft()="<<node->getLeft()->getData()<<std::endl;
- 
-	if(!node->getLeft() || !node->getRight()) //if tree is only of one node, return this
+	std::cout<<"node="<<node->getData()<<std::endl;
+	if(node->getLeft())
+		std::cout<<"node->getLeft()="<<node->getLeft()->getData()<<std::endl;
+	 std::cout << node << std::endl;
+	if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return this
+	{
+			std::cout<<"no more children"<<std::endl;
 			return node->getData();
-			
-	//put paranthesis around expressions with operator + or -
-
-	if((node->getData()=="-" || node->getData()=="+") && (node->getLeft()->getLeft()!=NULL || node->getRight()->getRight()!=NULL))
-		return  "(" + toString(node->getLeft()) + node->getOperator() + toString(node->getRight())+ ")";
-
-	
-	if((node->getData()=="^" || node->getData()=="/") && (node->getLeft()->getData()=="+" || node->getLeft()->getData()=="-"))
-		return   "((" + toString(node->getLeft()) + ")" + node->getOperator() + toString(node->getRight()) + ")"  ;
-		
-	if((node->getData()=="^" || node->getData()=="/") && (node->getRight()->getData()=="+" || node->getRight()->getData()=="-"))
-		return  toString(node->getLeft())  + node->getOperator() + "(" + toString(node->getRight()) + ")";
-
-				
-	if(node->getData()=="&" || node->getData()=="%" || node->getData()=="#")
-	{	
-		std::string op;		
-		switch(node->getOperator())
-		{
-			case '&':
-				OP=  "ln";
-				break;
-			case  '%':
-				OP=  "cos";
-				break;
-			case '#':
-				OP= "sin";
-				break;
-			default:
-				OP=node->getData();
-				break;	
-		}
-		return toString(node->getLeft()) +  op  + "(" + toString(node->getRight()) +")";		
 	}
+				
+	//put paranthesis around expressions depending on the priority of their children
+	if(getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator()))
+	{
+				std::cout<<"Checking prio in right branch"<<std::endl;
+		return toString(node->getLeft()) +  node->getOperator()  + "(" + toString(node->getRight()) +")";
+	}		
+	
+	if(getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator()))
+	{
+				std::cout<<"Checking prio in right branch"<<std::endl;
+		return  "(" + toString(node->getLeft()) +")"+  node->getOperator()  +  toString(node->getRight());
+	}
+
+	if(node->getOperator()=='&'|| node->getOperator()=='%'|| node->getOperator()=='#' )
+	{
+	std::cout<<"Wierd operator"<<std::endl;
+					std::string op;	
+			switch(node->getOperator())
+			{
+				case '&':
+					op=  "ln";
+					break;
+				case  '%':
+					op=  "cos";
+					break;
+				case '#':
+					op= "sin";
+					break;
+				default:
+					op=node->getData();
+					break;	
+			}
+			return toString(node->getLeft()) +  op  + "(" + toString(node->getRight()) +")";		
+		}
+		
 	else
+	{
+		std::cout<<"Nothing extraordinary"<<std::endl;
 		return toString(node->getLeft()) +  node->getData()  + toString(node->getRight());
+		}
 }
  
- int getOpPrio(char op){
+ int Node::getOpPrio(char op){
 	switch(op) 
 	{
 		case '+':
@@ -242,7 +250,7 @@ if(node->getLeft()!=NULL)
 		case '#':
 			return 4;
 		default:
-			return 0;	
+			return 5;	
 	}
  }
 
