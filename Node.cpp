@@ -53,7 +53,7 @@ void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) 
 	
 	for(std::vector<Node*>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
 		if((*it) != NULL){
-			std::cout << (*it)->getData();
+		  std::cout << (*it)->getData();//(((unsigned long int)(*it))&0xFFF);
 		newNodes.push_back((*it)->getLeft());
 		newNodes.push_back((*it)->getRight());
 		}else{
