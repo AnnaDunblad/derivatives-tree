@@ -174,18 +174,19 @@ Node* Node::copyNodeTree(Node* node)
 return newNode;
 }
 
-//overload function turn tree to string
+//overload function  tree to string
 std::string Node::toExpression()
 { 	
 	return  toExpression(this);
 }
-//turn tree to string
+//from tree to string
 std::string Node::toExpression(Node* node){ 
  
 	if(!node->getLeft() || !node->getRight()) //if tree is only of one node, return this
 			return node->getData();
-	
-	if(node->getData()=="+" || node->getData()=="-") //put paranthesis around expressions with operator + or -
+			
+	//put paranthesis around expressions with operator + or -, but only if there are more expressions
+	if((node->getData()=="+" || node->getData()=="-") && (node->getLeft()->getLeft()!=NULL && node->getRight()->getRight()!=NULL) ) 
 			return "(" + toExpression(node->getLeft()) + node->getOperator() + toExpression(node->getRight())+ ")";
 			
 	
