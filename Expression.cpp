@@ -92,20 +92,6 @@ bool Expression::checkError()
 
   return true;
 }
-<<<<<<< HEAD
-
-std::string Expression::toString(){
-  std::string str(_str); // Make a new copy of string
-  replaceString(str,"#","sin");
-  replaceString(str,"%","cos");
-  replaceString(str,"&","ln");
-  return str;
-}
-
-
-=======
->>>>>>> 0dc6176820b20c764a519cc492c41008aeeb5970
-
 // Prepare the string before we split it in parts
 int Expression::preProcess()
 {
