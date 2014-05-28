@@ -175,23 +175,24 @@ return newNode;
 }
 
 //overload function  tree to string
-std::string Node::toExpression()
+std::string Node::toString()
 { 	
-	return  toExpression(this);
+	return  toString(this);
 }
 //from tree to string
-std::string Node::toExpression(Node* node){ 
+std::string Node::toString(Node* node){ 
  
 	if(!node->getLeft() || !node->getRight()) //if tree is only of one node, return this
 			return node->getData();
 			
-	//put paranthesis around expressions with operator + or -, but only if there are more expressions
-	if((node->getData()=="+" || node->getData()=="-") && (node->getLeft()->getLeft()!=NULL && node->getRight()->getRight()!=NULL) ) 
-			return "(" + toExpression(node->getLeft()) + node->getOperator() + toExpression(node->getRight())+ ")";
+	//put paranthesis around expressions with operator + or -
+	std::cout<<"node="<<node->getData()<<std::endl;
+	if(node->getData()=="+" || node->getData()=="-") 
+			return "(" + toString(node->getLeft()) + node->getOperator() + toString(node->getRight())+ ")";
 			
 	
 	if(node->getData()=="^" && node->getRight()->getRight()!=NULL && node->getRight()->getData()!="+" && node->getRight()->getData()!="-" )
-		return  toExpression(node->getLeft()) + node->getOperator() +"(" + toExpression(node->getRight())+ ")";
+		return  toString(node->getLeft()) + node->getOperator() +"(" + toString(node->getRight())+ ")";
 			
 	if(node->getData()=="&" || node->getData()=="%" || node->getData()=="#")
 	{	
@@ -211,10 +212,10 @@ std::string Node::toExpression(Node* node){
 				OP=node->getData();
 				break;	
 		}
-		return toExpression(node->getLeft()) +  OP  + "(" + toExpression(node->getRight()) +")";		
+		return toString(node->getLeft()) +  OP  + "(" + toString(node->getRight()) +")";		
 	}
 	else
-		return toExpression(node->getLeft()) +  node->getData()  + toExpression(node->getRight());
+		return toString(node->getLeft()) +  node->getData()  + toString(node->getRight());
 }
  
 
