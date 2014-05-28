@@ -1,8 +1,8 @@
 #include "Expression.h"
 
 
-char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^()."; 
 
+const char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^()."; 
 
 Expression::Expression(std::string str)
 {
@@ -58,13 +58,13 @@ void Expression::replaceString(std::string& subject, const std::string& search, 
 Node* Expression::toTree(){
   preProcess();
   Node* central = new Node();
-  toTreeInternal(central, _str);
+  toTree(central, _str);
   
   return central;
 }
 
 // Recursive method to create an tree from a string
-void Expression::toTreeInternal(Node* currNode, std::string currStr)
+void Expression::toTree(Node* currNode, std::string currStr)
 { 
   int pos = getHighestPrecedence(currStr);
 
@@ -77,8 +77,8 @@ void Expression::toTreeInternal(Node* currNode, std::string currStr)
     currNode->setRight(new Node());
     currNode->setLeft(new Node());
     
-    toTreeInternal(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
-    toTreeInternal(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
+    toTree(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
+    toTree(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
   }
 }
 
@@ -92,6 +92,7 @@ bool Expression::checkError()
 
   return true;
 }
+<<<<<<< HEAD
 
 std::string Expression::toString(){
   std::string str(_str); // Make a new copy of string
@@ -102,6 +103,8 @@ std::string Expression::toString(){
 }
 
 
+=======
+>>>>>>> 0dc6176820b20c764a519cc492c41008aeeb5970
 
 // Prepare the string before we split it in parts
 int Expression::preProcess()
@@ -234,5 +237,23 @@ std::string Expression::fixParenthesis(std::string str)
   else if(parentheses==-1 && str[str.length()-1] == ')')
     str.erase(str.length()-1,1);
   
-  return str; //annas kommentar
+  return str;
 }
+
+
+
+
+std::ostream& operator<<(std::ostream& out, const Expression& exp)
+{
+  // Since operator << is a friend of the Expression class, we can access Expression's members directly.
+  std::string str(exp._str); // Make a new copy of string because we don't want to "undo" the preProcessing work of this expression
+
+  Expression::replaceString(str,"#","sin");
+  Expression::replaceString(str,"%","cos");
+  Expression::replaceString(str,"&","ln");
+
+  out << str;
+  return out;
+}
+
+

@@ -15,7 +15,7 @@ void print(Node* tree)
   if(treeViz)
     tree->printTree();
   else
-    std::cout << tree->toExpression().toString()<<std::endl;
+    std::cout << tree->toExpression() << std::endl;
 }
 
 
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
     }
     while(getline(file, line)){
       trees.push_back(Expression(line).toTree());
-      std::cout << trees.back()->toExpression().toString() << " added."<<std::endl;
+      std::cout << trees.back()->toExpression() << " added."<<std::endl;
     }
     file.close();
     
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
       
       while(getline(file, line)){
 	trees.push_back(Expression(line).toTree());
-	std::cout << trees.back()->toExpression().toString() << " added."<<std::endl;
+	std::cout << trees.back()->toExpression() << " added."<<std::endl;
       }
       file.close();
       break;
@@ -151,23 +151,24 @@ int main(int argc, char* argv[])
 	trees[i]->shorten();
       
       
-      std::cout << "Will differentiate " << i+1 << ": " << trees[i]->toExpression().toString()<< std::endl;
+      std::cout << "Differentiate expression " << i+1 << ": " << trees[i]->toExpression();
       variables.clear();
       // Get all variables existing in the current tree
       trees[i]->getVariables(variables);
       // If the tree didn't contain any variable I just pass x as dummy variable
       if(variables.empty()){
 	var="x";
+	std::cout << std::endl;
       }
       // If the tree just has one variable we don't need to bother the user with a question, just use the variable
       else if(variables.size()==1){
-	std::cout << "Differentiate with respect on " << variables.begin()->first << std::endl;
+	std::cout << " with respect on " << variables.begin()->first << "." << std::endl;
 	var = variables.begin()->first;
       }
       // If the tree has several variables we need to ask which one the user want to derive with respect on
       else{
 	do{
-	  std::cout << "Differentiate with respect on variable?" << std::endl;
+	  std::cout << " with respect on variable?" << std::endl;
 	  for(std::map<std::string,float>::iterator it=variables.begin(); it!=variables.end(); ++it){
 	    std::cout << it->first << std::endl;
 	  }
@@ -177,7 +178,7 @@ int main(int argc, char* argv[])
 	}while(variables.find(var) == variables.end());
       }
       // Differentiate the expression
-      trees[i] = trees[i]->derive(var);
+      trees[i] = trees[i]->differentiate(var);
 
       // Short expression (if not -ns flag provided)
       if(!(argc>3 && std::string(argv[3]) == "-ns"))
@@ -185,11 +186,13 @@ int main(int argc, char* argv[])
       
 
       
-      std::string derivata = trees[i]->toExpression().toString();
-      file << derivata << std::endl;
-      std::cout << "Saved expression " << i+1 << ": " << derivata << std::endl;
+      Expression derivada = trees[i]->toExpression();
+      file << derivada << std::endl;
+      std::cout << "Saved expression " << i+1 << ": " << derivada << std::endl;
     }
     file.close();
+    std::cout << std::endl << std::endl;
+
   }
 
   // Reset the cout, like no parameter was passed (because we don't want to enter this if once more)
@@ -309,7 +312,7 @@ int main(int argc, char* argv[])
       std::cin >> filename;
       file.open(filename.c_str(), std::ios::out | std::ios::trunc);
       for(unsigned int i = 0; i < trees.size(); i++) {
-	file << trees[i]->toExpression().toString();
+	file << trees[i]->toExpression() << std::endl;
 	std::cout << "Saved expression " << i+1 <<"."<< std::endl; 
       }
       file.close();

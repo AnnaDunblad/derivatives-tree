@@ -1,7 +1,8 @@
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 #include<string>
-#include<iostream> // For debug purpose
+#include<iostream> // For printing stuff (debug etc.)
+#include<ostream> // For overloading << to cout
 
 #include "Node.h"
 class Node;
@@ -9,8 +10,9 @@ class Node;
 class Expression
 {
  private: 
+
   // Variables
-  static char _allowedCharacters[];
+  static const char _allowedCharacters[];
   std::string _str;
 
   // Methods, mayority static because they don't use class variables, but parameters (usually in recursive calls)
@@ -24,7 +26,7 @@ class Expression
   static std::string fixParenthesis(std::string);
 
   static int getHighestPrecedence(std::string);
-  static void toTreeInternal(Node*, std::string);
+  void toTree(Node*, std::string);
 
   int preProcess();
      
@@ -32,6 +34,7 @@ class Expression
   Expression(std::string);
   Node* toTree();
   bool checkError();
-  std::string toString();
+  friend std::ostream& operator<<(std::ostream&, const Expression&);
+
 };
 #endif
