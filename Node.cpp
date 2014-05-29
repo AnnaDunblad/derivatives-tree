@@ -53,7 +53,7 @@ void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) 
 	
 	for(std::vector<Node*>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
 		if((*it) != NULL){
-			std::cout << (*it);//->getData();
+			std::cout << (*it)->getData();
 		newNodes.push_back((*it)->getLeft());
 		newNodes.push_back((*it)->getRight());
 		}else{
@@ -178,74 +178,50 @@ return newNode;
 //overload function  tree to string
 std::string Node::toString()
 {
-	//std::cout<<"overload funcion"<<std::endl;
 	return  toString(this);
 }
 //from tree to string
 std::string Node::toString(Node* node){ 
-	//std::cout<<"node="<<node->getData()<<std::endl;
-		
-//if(node->getLeft())
-	//	std::cout<<"node->getLeft()"<<node->getLeft()<<std::endl;
 
 	if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return this
 	{
 			//std::cout<<"no more children"<<std::endl;
 			return node->getData();
 	}
-				
+	std::string op;	
+	switch(node->getOperator())
+	{
+		case '&':
+			op=  "ln";
+			break;
+		case  '%':
+			op=  "cos";
+			break;
+		case '#':
+			op= "sin";
+			break;
+		default:
+			op=node->getData();
+			break;	
+	}
+		
 	//put paranthesis around expressions depending on the priority of their children
 	if((getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())) && (getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())))
 	{
-				std::cout<<"Checking prio in right branch"<<std::endl;
-		return  "(" + toString(node->getLeft()) + ")" +  node->getOperator()  + "(" + toString(node->getRight()) +")";
+		return  "(" + toString(node->getLeft()) + ")" +  op  + "(" + toString(node->getRight()) +")";
 	}	
-	if((getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())) && !(getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())))
+	if(getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator()))
 	{
-				std::cout<<"Checking prio in right branch"<<std::endl;
-		return   toString(node->getLeft())  +  node->getOperator()  + "(" + toString(node->getRight()) +")";
+		return   toString(node->getLeft())  +  op  + "(" + toString(node->getRight()) +")";
 	}	
 	
-	if((getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())) && (getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())))
+	if(getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator()))
 	{
-				std::cout<<"Checking prio in right left"<<std::endl;
-		return  "(" + toString(node->getLeft()) +")"+  node->getOperator()  + "(" + toString(node->getRight()) +")";
+		return  "(" + toString(node->getLeft()) +")"+  op  +  toString(node->getRight());
 	}
 	
-	if((getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())) && !(getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())))
-	{
-				std::cout<<"Checking prio in right left"<<std::endl;
-		return  "(" + toString(node->getLeft()) +")"+  node->getOperator()  +  toString(node->getRight());
-	}
 	
-
-	if(node->getOperator()=='&'|| node->getOperator()=='%'|| node->getOperator()=='#' )
-	{
-	std::cout<<"Wierd operator"<<std::endl;
-					std::string op;	
-			switch(node->getOperator())
-			{
-				case '&':
-					op=  "ln";
-					break;
-				case  '%':
-					op=  "cos";
-					break;
-				case '#':
-					op= "sin";
-					break;
-				default:
-					op=node->getData();
-					break;	
-			}
-			return toString(node->getLeft()) +  op  + "(" + toString(node->getRight()) +")";		
-		}
-		
-	else
-	{
-		//std::cout<<"Nothing extraordinary"<<std::endl;
-		return toString(node->getLeft()) +  node->getData()  + toString(node->getRight());
-		}
+	return toString(node->getLeft()) + op + toString(node->getRight());
 }
  
  int Node::getOpPrio(char op){
