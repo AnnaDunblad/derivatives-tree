@@ -178,34 +178,46 @@ return newNode;
 //overload function  tree to string
 std::string Node::toString()
 {
-	std::cout<<"overload funcion"<<std::endl;
+	//std::cout<<"overload funcion"<<std::endl;
 	return  toString(this);
 }
 //from tree to string
 std::string Node::toString(Node* node){ 
-	std::cout<<"node="<<node->getData()<<std::endl;
+	//std::cout<<"node="<<node->getData()<<std::endl;
 		
 //if(node->getLeft())
 	//	std::cout<<"node->getLeft()"<<node->getLeft()<<std::endl;
 
 	if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return this
 	{
-			std::cout<<"no more children"<<std::endl;
+			//std::cout<<"no more children"<<std::endl;
 			return node->getData();
 	}
 				
 	//put paranthesis around expressions depending on the priority of their children
-	if(getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator()))
+	if((getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())) && (getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())))
 	{
 				std::cout<<"Checking prio in right branch"<<std::endl;
-		return toString(node->getLeft()) +  node->getOperator()  + "(" + toString(node->getRight()) +")";
-	}		
+		return  "(" + toString(node->getLeft()) + ")" +  node->getOperator()  + "(" + toString(node->getRight()) +")";
+	}	
+	if((getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())) && !(getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())))
+	{
+				std::cout<<"Checking prio in right branch"<<std::endl;
+		return   toString(node->getLeft())  +  node->getOperator()  + "(" + toString(node->getRight()) +")";
+	}	
 	
-	if(getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator()))
+	if((getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())) && (getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())))
 	{
-				std::cout<<"Checking prio in right branch"<<std::endl;
+				std::cout<<"Checking prio in right left"<<std::endl;
+		return  "(" + toString(node->getLeft()) +")"+  node->getOperator()  + "(" + toString(node->getRight()) +")";
+	}
+	
+	if((getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())) && !(getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())))
+	{
+				std::cout<<"Checking prio in right left"<<std::endl;
 		return  "(" + toString(node->getLeft()) +")"+  node->getOperator()  +  toString(node->getRight());
 	}
+	
 
 	if(node->getOperator()=='&'|| node->getOperator()=='%'|| node->getOperator()=='#' )
 	{
