@@ -53,7 +53,7 @@ void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) 
 	
 	for(std::vector<Node*>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
 		if((*it) != NULL){
-			std::cout << (*it)->getData();
+			std::cout << (*it);//->getData();
 		newNodes.push_back((*it)->getLeft());
 		newNodes.push_back((*it)->getRight());
 		}else{
@@ -162,33 +162,32 @@ return newNode;
 //copies a tree nodewise recursive 
 Node* Node::copyNodeTree(Node* node)
 {
+	std::cout<<"node="<<node->getData()<<std::endl;
 	Node* newNode=new Node();
-	newNode->setRight(new Node());
-	newNode->setLeft(new Node());
-	
 	newNode->setData(node->getData()); //copy first node
-	if(node->getRight()!=NULL && node->getRight()!=NULL)
-	{
-		newNode->setRight(node->getRight());
-		newNode->setLeft(node->getLeft());
-		copyNodeTree(node->getLeft());
-		copyNodeTree(node->getRight());
+	
+	if(node->getRight() && node->getLeft())
+	{	
+		newNode->setRight(copyNodeTree(node->getRight()));
+		newNode->setLeft(copyNodeTree(node->getLeft()));
+
 	}
 return newNode;
 }
 
 //overload function  tree to string
 std::string Node::toString()
-{ 	
+{
+	std::cout<<"overload funcion"<<std::endl;
 	return  toString(this);
 }
 //from tree to string
 std::string Node::toString(Node* node){ 
-
 	std::cout<<"node="<<node->getData()<<std::endl;
-	if(node->getLeft())
-		std::cout<<"node->getLeft()="<<node->getLeft()->getData()<<std::endl;
-	 std::cout << node << std::endl;
+		
+//if(node->getLeft())
+	//	std::cout<<"node->getLeft()"<<node->getLeft()<<std::endl;
+
 	if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return this
 	{
 			std::cout<<"no more children"<<std::endl;
@@ -232,7 +231,7 @@ std::string Node::toString(Node* node){
 		
 	else
 	{
-		std::cout<<"Nothing extraordinary"<<std::endl;
+		//std::cout<<"Nothing extraordinary"<<std::endl;
 		return toString(node->getLeft()) +  node->getData()  + toString(node->getRight());
 		}
 }
