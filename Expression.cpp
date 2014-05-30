@@ -74,7 +74,7 @@ int Expression::getHighestPrecedence(std::string str)
   int numberOfParentheses = 0;
   int groundest = 255;
   int groundestPosition = -1;
-
+  
   for(int i = str.length()-1; i >= 0; --i) {
     
     switch(str[i]) {
@@ -83,11 +83,11 @@ int Expression::getHighestPrecedence(std::string str)
 	throw std::invalid_argument("Mismatch of parentheses exception");
       numberOfParentheses--; // OBS, the loop is in reverse order to make 5/3*4 appear (5/3)*4
       break;
-
+      
     case ')':
-        numberOfParentheses++;
+      numberOfParentheses++;
       break;
-
+      
     case '&':
     case '%':
     case '#':
@@ -114,7 +114,7 @@ int Expression::getHighestPrecedence(std::string str)
 	groundestPosition = i;
       }
       break;
-
+      
     case '+':
     case '-': //TODO: Don't return unary - signs as precedece value
       // If this is the operator with the highest precedence up to now
@@ -184,7 +184,7 @@ int Expression::preProcess()
 void Expression::toTree(Node* currNode, std::string currStr)
 { 
   int pos = getHighestPrecedence(currStr);
-
+  
   // the currStr doesn't contain any operator
   if(pos==-1){
     currNode->setData(trim(currStr));
@@ -217,7 +217,7 @@ bool Expression::checkError()
   // If the string contains non valid characters
   if(_str.find_first_not_of(_allowedCharacters)!=std::string::npos)
     throw std::invalid_argument("Exp contains illegal character");
-
+  
   return true;
 }
 
@@ -235,11 +235,11 @@ std::ostream& operator<<(std::ostream& out, const Expression& exp)
 {
   // Since operator << is a friend of the Expression class, we can access Expression's members directly.
   std::string str(exp._str); // Make a new copy of string because we don't want to "undo" the preProcessing work of this expression
-
+  
   Expression::replaceString(str,"#","sin");
   Expression::replaceString(str,"%","cos");
   Expression::replaceString(str,"&","ln");
-
+  
   out << str;
   return out;
 }
