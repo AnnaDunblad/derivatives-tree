@@ -23,7 +23,6 @@ class Node{
 		int maxLevel(Node* node);
 		bool isAllElementsNull(std::vector<Node*>);
 		void printTree(std::vector<Node*>, int, int);
-		int shorten(Node*); 
 		char getOperator();
 		bool isNumeric();
 		float getNumber();
@@ -47,7 +46,7 @@ class Node{
 		void printTree();
 
 		// Shorten the expression tree (remove zeroes, remove outermost parenthesis, 
-		void shorten();
+		int shorten();
 
 		Node* differentiate(std::string var);   //overload method to return result of differentiate
 
