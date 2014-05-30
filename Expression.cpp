@@ -1,6 +1,14 @@
+// Author: Fredrik Lofgren
+// Date: 30 May
+// Open Source for any use by anyone
+
 #include "Expression.h"
 
 const char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^()."; 
+
+// -----------------------------------------------------------
+//                          PRIVATE
+// -----------------------------------------------------------
 
 // Return true if ch is operator
 bool Expression::isOperator(char ch)
@@ -203,6 +211,9 @@ void Expression::toTree(Node* currNode, std::string currStr)
 }
 
 
+// -----------------------------------------------------------
+//                            PUBLIC
+// -----------------------------------------------------------
 
 // Creates an tree from the string
 Node* Expression::toTree(){

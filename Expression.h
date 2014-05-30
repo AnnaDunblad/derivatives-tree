@@ -1,3 +1,7 @@
+// Author: Fredrik Lofgren
+// Date: 30 May
+// Open Source for any use by anyone
+
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 #include<string>
@@ -5,6 +9,7 @@
 #include<ostream> // For overloading << to cout
 
 #include "Node.h"
+
 class Node;
 
 class Expression
