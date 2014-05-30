@@ -42,6 +42,9 @@ Node* Node::differentiate(std::string var)
 	return differentiate(var,this,newNode);
 }
 
+
+
+
  // differentiate this tree, recursive
 Node* Node::differentiate(std::string variable,Node* node, Node* newNode )
  {
@@ -105,18 +108,13 @@ Node* Node::copyNodeTree(Node* node)
 return newNode;
 }
 
-//overload function  tree to string
-std::string Node::toString()
-{
-	return  toString(this);
-}
-//from tree to string
-std::string Node::toString(Node* node){ 
 
-	if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return this
+
+std::ostream& operator<<(std::ostream &output,Node* node)
+{
+if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return only that node
 	{
-			//std::cout<<"no more children"<<std::endl;
-			return node->getData();
+		 return output << node->getData();
 	}
 	std::string op;	
 	switch(node->getOperator())
@@ -135,24 +133,27 @@ std::string Node::toString(Node* node){
 			break;	
 	}
 		
-	//put paranthesis around expressions depending on the priority of their children
-	if((getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())) && (getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())))
+	//put paranthesis around expressions depending on the priority of children compared to parent
+	if((Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getRight()->getOperator())) && 
+	(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getLeft()->getOperator())))
 	{
-		return  "(" + toString(node->getLeft()) + ")" +  op  + "(" + toString(node->getRight()) +")";
+		return output << "(" << node->getLeft() << ")" << op  << "(" << node->getRight() << ")";
 	}	
-	if(getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator()))
+	if(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getRight()->getOperator()))
 	{
-		return   toString(node->getLeft())  +  op  + "(" + toString(node->getRight()) +")";
+		return  output <<   node->getLeft()  << op  <<"(" << node->getRight() << ")";
 	}	
 	
-	if(getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator()))
+	if(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getLeft()->getOperator()))
 	{
-		return  "(" + toString(node->getLeft()) +")"+  op  +  toString(node->getRight());
+		return  output <<  "(" << node->getLeft() << ")" <<  op  <<  node->getRight();
 	}
 	
 	
-	return toString(node->getLeft()) + op + toString(node->getRight());
+	return  output << node->getLeft() << op << node->getRight();
+	
 }
+
  
  int Node::getOpPrio(char op){
 	switch(op) 
