@@ -42,7 +42,7 @@ class Node{
 		void multDifferentiate(std::string var, Node* node, Node* newNode); //differentiate mutiplication
 		void divDifferentiate(std::string var,Node* node, Node* newNode); //differentiate divisions
 		void powDifferentiate(std::string var,Node* node, Node* newNode);//differentiate powers	
-		void cosDifferentiate(std::string var, Node* node, Node* newNode); //differentate cin	
+		void cosDifferentiate(std::string var, Node* node, Node* newNode); //differentate cos	
 		void sinDifferentiate(std::string var,Node* node, Node* newNode); //differetiate sin
 		void lnDifferentiate(std::string var, Node* node, Node* newNode); //differentiate ln
 
