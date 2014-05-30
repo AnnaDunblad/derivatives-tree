@@ -25,27 +25,27 @@ class Node{
 		std::string _data; 
 		
 		void setData(float);
-		int maxLevel(Node* node);
+		int maxLevel(Node*);
 		bool isAllElementsNull(std::vector<Node*>);
 		void printTree(std::vector<Node*>, int, int);
 		char getOperator();
 		bool isNumeric();
 		float getNumber();
 		static float doOperation(float,char,float); //calculate value of inserted operators of nodes if not symbolic tree
-		Node* differentiate(std::string variable, Node* node, Node* newNode); // differentiate this tree, recursive
+		Node* differentiate(std::string, Node*, Node*); // differentiate this tree, recursive
 		
-		static Node* copyNodeTree(Node* node); //copies a tree nodewise recursive 
-		static int getOpPrio(char op);
+		static Node* copyNodeTree(Node*); //copies a tree nodewise recursive 
+		static int getOpPrio(char);
 
 		//functions used to differentiate different expressions
-		void addDifferentiate(std::string var, Node* node, Node* newNode); //differentiate additions
-		void subDifferentiate(std::string var, Node* node, Node* newNode); //differentiate subtractions
-		void multDifferentiate(std::string var, Node* node, Node* newNode); //differentiate mutiplication
-		void divDifferentiate(std::string var,Node* node, Node* newNode); //differentiate divisions
-		void powDifferentiate(std::string var,Node* node, Node* newNode);//differentiate powers	
-		void cosDifferentiate(std::string var, Node* node, Node* newNode); //differentate cos	
-		void sinDifferentiate(std::string var,Node* node, Node* newNode); //differetiate sin
-		void lnDifferentiate(std::string var, Node* node, Node* newNode); //differentiate ln
+		void addDifferentiate(std::string, Node*, Node*); //differentiate additions
+		void subDifferentiate(std::string, Node*, Node*); //differentiate subtractions
+		void multDifferentiate(std::string, Node*, Node*); //differentiate mutiplication
+		void divDifferentiate(std::string,Node*, Node*); //differentiate divisions
+		void powDifferentiate(std::string,Node*, Node*);//differentiate powers	
+		void cosDifferentiate(std::string, Node*, Node*); //differentate cos	
+		void sinDifferentiate(std::string,Node* node, Node*); //differetiate sin
+		void lnDifferentiate(std::string, Node*, Node*); //differentiate ln
 
 
 	public: 
@@ -57,15 +57,15 @@ class Node{
 		void setLeft(Node*);
 		void setData(std::string);
 		std::string getData();
-		friend std::ostream& operator<<(std::ostream &output, Node* node);
+		friend std::ostream& operator<<(std::ostream&, Node*);
 
-		// Return a printable representation of this tree
+		// Overload method to the private void printTree(std::vector<Node*>, int, int). 
 		void printTree();
 
 		// Shorten the expression tree (remove zeroes, remove outermost parenthesis, 
-		int shorten();
+		void shorten();
 
-		Node* differentiate(std::string var);   //overload method to return result of differentiate
+		Node* differentiate(std::string);   //overload method to return result of differentiate
 
 		
 		// Returns a map with all variables used in this tree (and their values set to 0)

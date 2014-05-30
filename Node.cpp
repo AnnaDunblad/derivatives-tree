@@ -50,7 +50,7 @@ Node* Node::differentiate(std::string var)
 	return differentiate(var,this,newNode);
 }
 
-std::ostream& operator<<(std::ostream &output,Node* node)
+std::ostream& operator<<(std::ostream& output,Node* node)
 {
 if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return only that node
 	{

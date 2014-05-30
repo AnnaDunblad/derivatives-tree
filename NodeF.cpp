@@ -9,7 +9,7 @@
 // -----------------------------------------------------------
 
 // Shorten the tree below this Node
-int Node::shorten(){
+void Node::shorten(){
   
   // Shorten the children first (Note: Since it's a binary tree each node either have both or none children, so just check for one)
   if(this->getRight()){ 
@@ -17,7 +17,7 @@ int Node::shorten(){
     this->getLeft()->shorten();
   }else{
     // If this node doesn't have any children we can't shorten it
-    return 0;
+    return;
   }
   
   // Child node containing data=0
@@ -46,7 +46,7 @@ int Node::shorten(){
     this->setRight(NULL);
     this->setLeft(NULL);
     
-    return 1;
+    return;
   }
   
   
@@ -63,7 +63,7 @@ int Node::shorten(){
     this->setLeft(tmp->getLeft());
     
     delete tmp;
-    return 1;
+    return;
   }
   
   
@@ -80,7 +80,7 @@ int Node::shorten(){
     this->setRight(tmp->getRight()); 
     
     delete tmp;
-    return 1; 
+    return; 
   }
   
   
@@ -94,7 +94,7 @@ int Node::shorten(){
     case '-':
       // Special case with zero to the left, because we shoudn't short it (0-b != b)
       if(zeroChild==this->getLeft()){
-	return 0; // Use return instead of break because we don't want to remove the zeroChild after the switch 	
+	return; // Use return instead of break because we don't want to remove the zeroChild after the switch 	
       }
       // NOTE: Fall through! b-0 is the same as b+0 or 0+b
       
@@ -133,10 +133,10 @@ int Node::shorten(){
     
     // Delete the zero node (must be last because we don't want to remove the zero in for example 0-b).
     delete zeroChild; 
-    return 1;
+    return;
   } 
   
-  return 0;
+  return;
 }
 
 // Returns the variables used in this String (use set because it contains unique elements)
@@ -151,7 +151,7 @@ void Node::getVariables(std::map<std::string,float>& variables){
   }
 }
 
-// Calculate the value of this tree with the variables set to the values in the map
+// Calculate the value of this tree if all symbolic variables is set to value,with the variables set to the values in the map
 float Node::calculate(std::map<std::string,float>& variables){
   // If this is a number literal
   if(this->isNumeric())
