@@ -34,76 +34,6 @@ Node* Node::getLeft(){
   return _leftChildren;
 }
 
-void Node::printTree() {
-  int maxLevel = this->maxLevel(this);
-  printTreeInternal(std::vector<Node*>(1,this), 1, maxLevel);
-}
-
-void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) {
-	if (nodes.empty() || isAllElementsNull(nodes))
-		return;
-
-	int floor = maxLevel - level;
-	int endgeLines = 1<<std::max(floor - 1, 0);
-	int firstSpaces = (1<<floor) - 1;
-	int betweenSpaces = (1<<(floor + 1)) - 1;
-
-	std::cout << std::string(firstSpaces,' ');
-	std::vector<Node*> newNodes;
-	
-	for(std::vector<Node*>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
-		if((*it) != NULL){
-		  std::cout << (*it)->getData();//(((unsigned long int)(*it))&0xFFF);
-		newNodes.push_back((*it)->getLeft());
-		newNodes.push_back((*it)->getRight());
-		}else{
-			newNodes.push_back(NULL);
-		newNodes.push_back(NULL);
-		std::cout << " ";
-		}
-		std::cout << std::string(betweenSpaces,' ');
-	}
-	std::cout << std::endl;
-	
-	for (int i = 1; i <= endgeLines; i++) {
-		for (unsigned int j = 0; j < nodes.size(); j++) {
-			if(firstSpaces - i > 0)
-				std::cout << std::string(firstSpaces - i,' ');
-
-			if (nodes[j] == NULL) {
-				std::cout << std::string(endgeLines + endgeLines + i + 1,' ');
-			continue;
-			}
-			if (nodes[j]->getLeft() != NULL)
-				std::cout << "/";
-			else	
-				std::cout << std::string(1,' ');
-			std::cout << std::string(i + i - 1,' ');
-
-			if (nodes[j]->getRight() != NULL)
-				std::cout << "\\";
-			else
-				std::cout << std::string(1,' ');
-			std::cout << std::string(endgeLines + endgeLines - i,' ');
-		}
-	std::cout << std::endl;
-	}
-	
-	printTreeInternal(newNodes, level + 1, maxLevel);
-}
-int Node::maxLevel(Node* node){
-  if (node == NULL)
-    return 0;
-  return std::max(maxLevel(node->getLeft()), maxLevel(node->getRight())) + 1;
-}
-
-bool Node::isAllElementsNull(std::vector<Node*> list) {
-  for(std::vector<Node*>::iterator it = list.begin(); it != list.end(); ++it) {
-    if((*it) != NULL)
-      return false;
-  }
-  return true;
-}
 //overload method to return result of differentiate
 Node* Node::differentiate(std::string var)
 {
@@ -162,79 +92,66 @@ return newNode;
 //copies a tree nodewise recursive 
 Node* Node::copyNodeTree(Node* node)
 {
+	std::cout<<"node="<<node->getData()<<std::endl;
 	Node* newNode=new Node();
-	newNode->setRight(new Node());
-	newNode->setLeft(new Node());
-	
 	newNode->setData(node->getData()); //copy first node
-	if(node->getRight()!=NULL && node->getRight()!=NULL)
-	{
-		newNode->setRight(node->getRight());
-		newNode->setLeft(node->getLeft());
-		copyNodeTree(node->getLeft());
-		copyNodeTree(node->getRight());
+	
+	if(node->getRight() && node->getLeft())
+	{	
+		newNode->setRight(copyNodeTree(node->getRight()));
+		newNode->setLeft(copyNodeTree(node->getLeft()));
+
 	}
 return newNode;
 }
 
 //overload function  tree to string
 std::string Node::toString()
-{ 	
+{
 	return  toString(this);
 }
 //from tree to string
 std::string Node::toString(Node* node){ 
 
-	std::cout<<"node="<<node->getData()<<std::endl;
-	if(node->getLeft())
-		std::cout<<"node->getLeft()="<<node->getLeft()->getData()<<std::endl;
-	 std::cout << node << std::endl;
 	if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return this
 	{
-			std::cout<<"no more children"<<std::endl;
+			//std::cout<<"no more children"<<std::endl;
 			return node->getData();
 	}
-				
+	std::string op;	
+	switch(node->getOperator())
+	{
+		case '&':
+			op=  "ln";
+			break;
+		case  '%':
+			op=  "cos";
+			break;
+		case '#':
+			op= "sin";
+			break;
+		default:
+			op=node->getData();
+			break;	
+	}
+		
 	//put paranthesis around expressions depending on the priority of their children
+	if((getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator())) && (getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator())))
+	{
+		return  "(" + toString(node->getLeft()) + ")" +  op  + "(" + toString(node->getRight()) +")";
+	}	
 	if(getOpPrio(node->getOperator()) > getOpPrio(node->getRight()->getOperator()))
 	{
-				std::cout<<"Checking prio in right branch"<<std::endl;
-		return toString(node->getLeft()) +  node->getOperator()  + "(" + toString(node->getRight()) +")";
-	}		
+		return   toString(node->getLeft())  +  op  + "(" + toString(node->getRight()) +")";
+	}	
 	
 	if(getOpPrio(node->getOperator()) > getOpPrio(node->getLeft()->getOperator()))
 	{
-				std::cout<<"Checking prio in right branch"<<std::endl;
-		return  "(" + toString(node->getLeft()) +")"+  node->getOperator()  +  toString(node->getRight());
+		return  "(" + toString(node->getLeft()) +")"+  op  +  toString(node->getRight());
 	}
-
-	if(node->getOperator()=='&'|| node->getOperator()=='%'|| node->getOperator()=='#' )
-	{
-	std::cout<<"Wierd operator"<<std::endl;
-					std::string op;	
-			switch(node->getOperator())
-			{
-				case '&':
-					op=  "ln";
-					break;
-				case  '%':
-					op=  "cos";
-					break;
-				case '#':
-					op= "sin";
-					break;
-				default:
-					op=node->getData();
-					break;	
-			}
-			return toString(node->getLeft()) +  op  + "(" + toString(node->getRight()) +")";		
-		}
-		
-	else
-	{
-		std::cout<<"Nothing extraordinary"<<std::endl;
-		return toString(node->getLeft()) +  node->getData()  + toString(node->getRight());
-		}
+	
+	
+	return toString(node->getLeft()) + op + toString(node->getRight());
 }
  
  int Node::getOpPrio(char op){
