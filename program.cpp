@@ -1,3 +1,7 @@
+// Author: Fredrik Lofgren
+// Date: 30 May
+// Open Source for any use by anyone
+
 #include <fstream>   // To read/write files
 #include <iostream>  // Input/Output
 #include <vector>    // vector of trees

@@ -1,3 +1,7 @@
+// Author: Fredrik Lofgren and Anna Dunblad
+// Date: 30 May
+// Open Source for any use by anyone
+
 #ifndef NODE_H
 #define NODE_H
 
