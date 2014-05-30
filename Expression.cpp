@@ -2,23 +2,25 @@
 
 const char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^()."; 
 
-
-// TODO: Make these functions static, to not have a copy of them in all instances
+// Return true if ch is operator
 bool Expression::isOperator(char ch)
 {
   return ch=='*' || ch=='+' || ch=='/' || ch=='-' || ch=='^';
 }
+// Returns true if ch is a number
 bool Expression::isNumber(char ch)
 {
   return ch >= '0' && ch <= '9';
 }
+// Returns true if ch is a letter
 bool Expression::isVariable(char ch)
 {
   return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
-// In the preprocessing we have changed the functions to a single character symbol
+// Returns true if ch is a function (sin, cos, ln)
 bool Expression::isFunction(char ch)
 {
+  // In the preprocessing we have changed the functions to a single character symbol
   return ch=='&' || ch=='%' || ch=='#';
 }
 
@@ -67,14 +69,15 @@ std::string Expression::fixParenthesis(std::string str)
 }
 
 
-
+// Returns the position of the operator where we should split the expression
 int Expression::getHighestPrecedence(std::string str)
 {
   // Search for the operator with highest precedence. 
   int numberOfParentheses = 0;
   int groundest = 255;
   int groundestPosition = -1;
-  
+
+  // Loop through the string in reverse order!
   for(int i = str.length()-1; i >= 0; --i) {
     
     switch(str[i]) {
