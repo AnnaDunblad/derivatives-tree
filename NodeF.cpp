@@ -1,4 +1,12 @@
+// Author: Fredrik Lofgren
+// Date: 30 May
+// Open Source for any use by anyone
+
 #include "Node.h"
+
+// -----------------------------------------------------------
+//                          PUBLIC
+// -----------------------------------------------------------
 
 // Shorten the tree below this Node
 int Node::shorten(){
@@ -131,6 +139,47 @@ int Node::shorten(){
   return 0;
 }
 
+// Returns the variables used in this String (use set because it contains unique elements)
+void Node::getVariables(std::map<std::string,float>& variables){
+
+  // If this is a variable (i.e. has no childs and is not numeric)
+  if(this->getRight() == NULL && !this->isNumeric() && !this->getData().empty()){
+    variables.insert(std::pair<std::string,float>(this->getData(),0));
+  }else if(this->getRight() != NULL){
+    this->getRight()->getVariables(variables);
+    this->getLeft()->getVariables(variables);
+  }
+}
+
+// Calculate the value of this tree with the variables set to the values in the map
+float Node::calculate(std::map<std::string,float>& variables){
+  // If this is a number literal
+  if(this->isNumeric())
+    return this->getNumber();
+  // If this is a variable
+  else if(this->getRight() == NULL)
+    return variables[this->getData()];
+  // If this is an operation, execute it!
+  else
+    return doOperation(this->getLeft()->calculate(variables),this->getOperator(),this->getRight()->calculate(variables));
+  
+  return 0;
+}
+
+
+// Print this tree
+void Node::printTree() {
+  int maxLevel = this->maxLevel(this);
+  printTree(std::vector<Node*>(1,this), 1, maxLevel);
+}
+
+
+
+// -----------------------------------------------------------
+//                          PRIVATE
+// -----------------------------------------------------------
+
+// Do the operation op with left operand and right operand
 float Node::doOperation(float left, char op, float right)
 {
   switch(op){
@@ -159,6 +208,7 @@ float Node::doOperation(float left, char op, float right)
   }
   return 0;
 }
+
 
 // Return the operator, and n if the node contains data
 char Node::getOperator()
@@ -196,41 +246,8 @@ float Node::getNumber(){
   return number;
 }
 
-// Returns the variables used in this String (use set because it contains unique elements)
-void Node::getVariables(std::map<std::string,float>& variables){
-
-  // If this is a variable (i.e. has no childs and is not numeric)
-  if(this->getRight() == NULL && !this->isNumeric() && !this->getData().empty()){
-    variables.insert(std::pair<std::string,float>(this->getData(),0));
-  }else if(this->getRight() != NULL){
-    this->getRight()->getVariables(variables);
-    this->getLeft()->getVariables(variables);
-  }
-}
-
-// Calculate the value of this tree with the variables set to the values in the map
-float Node::calculate(std::map<std::string,float>& variables){
-  // If this is a number literal
-  if(this->isNumeric())
-    return this->getNumber();
-  // If this is a variable
-  else if(this->getRight() == NULL)
-    return variables[this->getData()];
-  // If this is an operation, execute it!
-  else
-    return doOperation(this->getLeft()->calculate(variables),this->getOperator(),this->getRight()->calculate(variables));
-  
-  return 0;
-}
-
-
-
-void Node::printTree() {
-  int maxLevel = this->maxLevel(this);
-  printTreeInternal(std::vector<Node*>(1,this), 1, maxLevel);
-}
-
-void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) {
+// Used internally to print a tree (recursively)
+void Node::printTree(std::vector<Node*> nodes, int level, int maxLevel) {
   if (nodes.empty() || isAllElementsNull(nodes))
     return;
   
@@ -280,7 +297,7 @@ void Node::printTreeInternal(std::vector<Node*> nodes, int level, int maxLevel) 
     std::cout << std::endl;
   }
   
-  printTreeInternal(newNodes, level + 1, maxLevel);
+  printTree(newNodes, level + 1, maxLevel);
 }
 int Node::maxLevel(Node* node){
   if (node == NULL)
@@ -295,3 +312,4 @@ bool Node::isAllElementsNull(std::vector<Node*> list) {
   }
   return true;
 }
+

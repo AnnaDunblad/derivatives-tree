@@ -23,7 +23,7 @@ class Node{
 
   int maxLevel(Node* node);
   bool isAllElementsNull(std::vector<Node*>);
-  void printTreeInternal(std::vector<Node*>, int, int);
+  void printTree(std::vector<Node*>, int, int);
   char getOperator();
   bool isNumeric();
   float getNumber();
