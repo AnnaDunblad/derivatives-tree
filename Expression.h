@@ -1,3 +1,7 @@
+// Author: Fredrik Lofgren
+// Date: 30 May
+// Open Source for any use by anyone
+
 #ifndef EXPRESSION_H
 #define EXPRESSION_H
 #include<string>
@@ -5,36 +9,39 @@
 #include<ostream> // For overloading << to cout
 
 #include "Node.h"
+
 class Node;
 
 class Expression
 {
  private: 
-
+  
   // Variables
   static const char _allowedCharacters[];
   std::string _str;
-
+  
   // Methods, mayority static because they don't use class variables, but parameters (usually in recursive calls)
   static bool isOperator(char);
   static bool isNumber(char);
   static bool isVariable(char);
   static bool isFunction(char);
-
+  
   static void replaceString(std::string&, const std::string&, const std::string&);
   static std::string trim(std::string);
   static std::string fixParenthesis(std::string);
-
+  
   static int getHighestPrecedence(std::string);
-  void toTree(Node*, std::string);
-
   int preProcess();
-     
+  void toTree(Node*, std::string);
+  
+  
  public:
-  Expression(std::string);
   Node* toTree();
   bool checkError();
+  
+  Expression(std::string);
+  
   friend std::ostream& operator<<(std::ostream&, const Expression&);
-
+  
 };
 #endif
