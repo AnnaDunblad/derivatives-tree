@@ -3,6 +3,11 @@
 // Open Source for any use by anyone
 #include "Node.h"
 
+
+
+// -----------------------------------------------------------
+//                          PUBLIC
+// -----------------------------------------------------------
 // Create a new floating node
 Node::Node()
 {
@@ -45,7 +50,52 @@ Node* Node::differentiate(std::string var)
 	return differentiate(var,this,newNode);
 }
 
-
+std::ostream& operator<<(std::ostream &output,Node* node)
+{
+if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return only that node
+	{
+		 return output << node->getData();
+	}
+	std::string op;	
+	switch(node->getOperator())
+	{
+		case '&':
+			op=  "ln";
+			break;
+		case  '%':
+			op=  "cos";
+			break;
+		case '#':
+			op= "sin";
+			break;
+		default:
+			op=node->getData();
+			break;	
+	}
+		
+	//put paranthesis around expressions depending on the priority of children compared to parent
+	if((Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getRight()->getOperator())) && 
+		(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getLeft()->getOperator())))
+	{
+		return output << "(" << node->getLeft() << ")" << op  << "(" << node->getRight() << ")";
+	}	
+	if(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getRight()->getOperator()))
+	{
+		return  output <<   node->getLeft()  << op  <<"(" << node->getRight() << ")";
+	}	
+	
+	if(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getLeft()->getOperator()))
+	{
+		return  output <<  "(" << node->getLeft() << ")" <<  op  <<  node->getRight();
+	}
+	
+	
+	return  output << node->getLeft() << op << node->getRight();
+	
+}
+// -----------------------------------------------------------
+//                          PRIVATE
+// -----------------------------------------------------------
 
 
  // differentiate this tree, recursive
@@ -109,53 +159,6 @@ Node* Node::copyNodeTree(Node* node)
 	}
 return newNode;
 }
-
-
-
-std::ostream& operator<<(std::ostream &output,Node* node)
-{
-if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return only that node
-	{
-		 return output << node->getData();
-	}
-	std::string op;	
-	switch(node->getOperator())
-	{
-		case '&':
-			op=  "ln";
-			break;
-		case  '%':
-			op=  "cos";
-			break;
-		case '#':
-			op= "sin";
-			break;
-		default:
-			op=node->getData();
-			break;	
-	}
-		
-	//put paranthesis around expressions depending on the priority of children compared to parent
-	if((Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getRight()->getOperator())) && 
-		(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getLeft()->getOperator())))
-	{
-		return output << "(" << node->getLeft() << ")" << op  << "(" << node->getRight() << ")";
-	}	
-	if(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getRight()->getOperator()))
-	{
-		return  output <<   node->getLeft()  << op  <<"(" << node->getRight() << ")";
-	}	
-	
-	if(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getLeft()->getOperator()))
-	{
-		return  output <<  "(" << node->getLeft() << ")" <<  op  <<  node->getRight();
-	}
-	
-	
-	return  output << node->getLeft() << op << node->getRight();
-	
-}
-
  
  int Node::getOpPrio(char op){
 	switch(op) 
