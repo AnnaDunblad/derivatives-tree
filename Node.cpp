@@ -1,3 +1,6 @@
+// Author: Anna Dunblad
+// Date: 30 May
+// Open Source for any use by anyone
 #include "Node.h"
 
 // Create a new floating node
@@ -95,7 +98,6 @@ return newNode;
 //copies a tree nodewise recursive 
 Node* Node::copyNodeTree(Node* node)
 {
-	std::cout<<"node="<<node->getData()<<std::endl;
 	Node* newNode=new Node();
 	newNode->setData(node->getData()); //copy first node
 	
@@ -135,7 +137,7 @@ if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return 
 		
 	//put paranthesis around expressions depending on the priority of children compared to parent
 	if((Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getRight()->getOperator())) && 
-	(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getLeft()->getOperator())))
+		(Node::getOpPrio(node->getOperator()) > Node::getOpPrio(node->getLeft()->getOperator())))
 	{
 		return output << "(" << node->getLeft() << ")" << op  << "(" << node->getRight() << ")";
 	}	
