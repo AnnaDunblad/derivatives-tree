@@ -20,11 +20,11 @@ int main(int argc, char* argv[])
 
 	Node* tree = exp.toTree();
 	tree->printTree();
-	Node* differentiaterat = tree->differentiate(variable);
-	differentiaterat->printTree();
-	differentiaterat->shorten();
+	//Node* differentiaterat = tree->differentiate(variable);
 	//differentiaterat->printTree();
-	std::cout<<"Expression= "<<tree->toString()<<std::endl; //differentiaterat->
+	//differentiaterat->shorten();
+	//differentiaterat->printTree();
+	std::cout<<"Expression= "<<exp.toTree()<<std::endl; 
 	
 	  
 }
