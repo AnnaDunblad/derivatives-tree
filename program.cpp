@@ -1,3 +1,7 @@
+// Author: Fredrik Lofgren
+// Date: 30 May
+// Open Source for any use by anyone
+
 #include <fstream>   // To read/write files
 #include <iostream>  // Input/Output
 #include <vector>    // vector of trees
@@ -283,7 +287,7 @@ int main(int argc, char* argv[])
       // ------------------------------------------  
       for(unsigned int i = 0; i < trees.size(); i++) {
 	variables.clear();
-	std::cout << "Expression " << i+1 <<":"<< std::endl;
+	std::cout << "Expression " << i+1 <<":" << trees[i] << std::endl;
 	trees[i]->getVariables(variables);
 	for(std::map<std::string,float>::iterator it=variables.begin(); it!=variables.end(); ++it){
 	  std::cout << "Insert value on variable " << it->first << ":" << std::endl;
