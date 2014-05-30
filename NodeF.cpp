@@ -71,19 +71,13 @@ bool Node::isAllElementsNull(std::vector<Node*> list) {
   return true;
 }
 
-// Shorten the Expression tree from this node (remove zeroes etc.)
-void Node::shorten(){
-  // TODO:  Sometimes we may need to shorten the tree several times 
-  shorten(this);
-}
-
-// Shorten the tree below /node/
-int Node::shorten(Node* node){
+// Shorten the tree below this Node
+int Node::shorten(){
   
   // Shorten the children first (Note: Since it's a binary tree each node either have both or none children, so just check for one)
-  if(node->getRight()){ 
-    node->getRight()->shorten();
-    node->getLeft()->shorten();
+  if(this->getRight()){ 
+    this->getRight()->shorten();
+    this->getLeft()->shorten();
   }else{
     // If this node doesn't have any children we can't shorten it
     return 0;
@@ -94,12 +88,12 @@ int Node::shorten(Node* node){
   // The other child node (with unknown data)
   Node* otherChild = NULL;
   
-  if(node->getRight()->getData()=="0"){
-    zeroChild = node->getRight();
-    otherChild = node->getLeft();
-  }else if(node->getLeft()->getData() == "0"){
-    zeroChild = node->getLeft();
-    otherChild = node->getRight();
+  if(this->getRight()->getData()=="0"){
+    zeroChild = this->getRight();
+    otherChild = this->getLeft();
+  }else if(this->getLeft()->getData() == "0"){
+    zeroChild = this->getLeft();
+    otherChild = this->getRight();
   }
   
   // --------------------------------------------------------------
@@ -107,13 +101,13 @@ int Node::shorten(Node* node){
   // for example 1+2 = 2 and remove the operator 
   // --------------------------------------------------------------
   // If both are pure numeric OR right numeric while left empty (then we have a function, like sine or log). 
-  if((node->getRight()->isNumeric() && node->getLeft()->isNumeric()) || (node->getRight()->isNumeric() && node->getLeft()->getData().empty())){
-    node->setData(Node::doOperation(node->getLeft()->getNumber(),node->getOperator(),node->getRight()->getNumber()));
+  if((this->getRight()->isNumeric() && this->getLeft()->isNumeric()) || (this->getRight()->isNumeric() && this->getLeft()->getData().empty())){
+    this->setData(Node::doOperation(this->getLeft()->getNumber(), this->getOperator(), this->getRight()->getNumber()));
     
-    delete node->getRight();
-    delete node->getLeft();
-    node->setRight(NULL);
-    node->setLeft(NULL);
+    delete this->getRight();
+    delete this->getLeft();
+    this->setRight(NULL);
+    this->setLeft(NULL);
     
     return 1;
   }
@@ -122,14 +116,14 @@ int Node::shorten(Node* node){
   // --------------------------------------------------------------
   // Short a/1 and a*1 to a
   // --------------------------------------------------------------
-  else if(node->getRight()->getData()=="1" && (node->getOperator()=='*' || node->getOperator()=='/')){
+  else if(this->getRight()->getData()=="1" && (this->getOperator()=='*' || this->getOperator()=='/')){
     
-    delete node->getRight();
-    Node* tmp = node->getLeft(); // Need to access getLeft() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
+    delete this->getRight();
+    Node* tmp = this->getLeft(); // Need to access getLeft() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
     
-    node->setData(tmp->getData());
-    node->setRight(tmp->getRight());
-    node->setLeft(tmp->getLeft());
+    this->setData(tmp->getData());
+    this->setRight(tmp->getRight());
+    this->setLeft(tmp->getLeft());
     
     delete tmp;
     return 1;
@@ -139,14 +133,14 @@ int Node::shorten(Node* node){
   // --------------------------------------------------------------
   // Short 1*a to a
   // --------------------------------------------------------------
-  else if(node->getLeft()->getData()=="1" && node->getOperator()=='*'){
+  else if(this->getLeft()->getData()=="1" && this->getOperator()=='*'){
     
-    delete node->getLeft();
-    Node* tmp = node->getRight(); // Need to access getRight() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
+    delete this->getLeft();
+    Node* tmp = this->getRight(); // Need to access getRight() to fetch its children, but then I have already updated the variable and lost track of this object, so need to save it before I update anything.
     
-    node->setData(tmp->getData());
-    node->setLeft(tmp->getLeft()); 
-    node->setRight(tmp->getRight()); 
+    this->setData(tmp->getData());
+    this->setLeft(tmp->getLeft()); 
+    this->setRight(tmp->getRight()); 
     
     delete tmp;
     return 1; 
@@ -158,34 +152,34 @@ int Node::shorten(Node* node){
   // --------------------------------------------------------------
   else if(zeroChild){
     
-    switch(node->getOperator()){
+    switch(this->getOperator()){
       
     case '-':
       // Special case with zero to the left, because we shoudn't short it (0-b != b)
-      if(zeroChild==node->getLeft()){
+      if(zeroChild==this->getLeft()){
 	return 0; // Use return instead of break because we don't want to remove the zeroChild after the switch 	
       }
       // NOTE: Fall through! b-0 is the same as b+0 or 0+b
       
     case '+':
       // Move the other child to this position (without changing the address of this node, i.e. node = otherNode wont work)
-      node->setData(otherChild->getData());
-      node->setRight(otherChild->getRight());
-      node->setLeft(otherChild->getLeft());
+      this->setData(otherChild->getData());
+      this->setRight(otherChild->getRight());
+      this->setLeft(otherChild->getLeft());
       // Delete the other node
       delete otherChild;
       break;
       
     case '/':
       // Check for illegal operation
-      if(zeroChild==node->getRight())
+      if(zeroChild==this->getRight())
 	throw std::overflow_error("Divide by zero exception");
       // NOTE: Fall through! The same as multiplication. 0/b is the same as 0*b or b*0
       
     case '^':// If the operator is ^
       // Check if the exponent was 0
-      if(zeroChild==node->getRight()){
-	node->setData("1");
+      if(zeroChild==this->getRight()){
+	this->setData("1");
 	delete otherChild;
 	break;
       }
@@ -194,9 +188,9 @@ int Node::shorten(Node* node){
     case '*': // If the operator is * ...
       // ... remove the other child as well
       delete otherChild;
-      node->setData("0");
-      node->setRight(NULL);
-      node->setLeft(NULL);
+      this->setData("0");
+      this->setRight(NULL);
+      this->setLeft(NULL);
       break;
     }
     
