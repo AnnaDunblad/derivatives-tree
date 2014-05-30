@@ -23,7 +23,8 @@ class Node{
 		Node* _rightChildren;
 		Node* _leftChildren;
 		std::string _data; 
-
+		
+		void setData(float);
 		int maxLevel(Node* node);
 		bool isAllElementsNull(std::vector<Node*>);
 		void printTree(std::vector<Node*>, int, int);
@@ -54,7 +55,6 @@ class Node{
 		Node* getLeft();
 		void setRight(Node*);
 		void setLeft(Node*);
-		void setData(float);
 		void setData(std::string);
 		std::string getData();
 		friend std::ostream& operator<<(std::ostream &output, Node* node);
