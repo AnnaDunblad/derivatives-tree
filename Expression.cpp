@@ -1,14 +1,6 @@
 #include "Expression.h"
 
-
-
 const char Expression::_allowedCharacters[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/^()."; 
-
-Expression::Expression(std::string str)
-{
-  _str = str;
-  checkError();
-}
 
 
 // TODO: Make these functions static, to not have a copy of them in all instances
@@ -30,6 +22,16 @@ bool Expression::isFunction(char ch)
   return ch=='&' || ch=='%' || ch=='#';
 }
 
+// Replace search with replace in subject
+void Expression::replaceString(std::string& subject, const std::string& search, const std::string& replace) {
+  size_t pos = 0;
+  while ((pos = subject.find(search, pos)) != std::string::npos) {
+    subject.replace(pos, search.length(), replace);
+    pos += replace.length();
+  }
+}
+
+
 // Removes the outermost parenthesis (but does not handle for example (a+b) * (b+c) correct. 
 std::string Expression::trim(std::string str)
 {
@@ -43,104 +45,26 @@ std::string Expression::trim(std::string str)
   return str;
 }
 
-// Replace search with replace in subject
-void Expression::replaceString(std::string& subject, const std::string& search, const std::string& replace) {
-  size_t pos = 0;
-  while ((pos = subject.find(search, pos)) != std::string::npos) {
-    subject.replace(pos, search.length(), replace);
-    pos += replace.length();
-  }
-}
 
-
-
-// Creates an tree from the string
-Node* Expression::toTree(){
-  preProcess();
-  Node* central = new Node();
-  toTree(central, _str);
-  
-  return central;
-}
-
-// Recursive method to create an tree from a string
-void Expression::toTree(Node* currNode, std::string currStr)
-{ 
-  int pos = getHighestPrecedence(currStr);
-
-  // the currStr doesn't contain any operator
-  if(pos==-1){
-    currNode->setData(trim(currStr));
-  }
-  else{
-    currNode->setData(std::string(1,currStr[pos]));
-    currNode->setRight(new Node());
-    currNode->setLeft(new Node());
-    
-    toTree(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
-    toTree(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
-  }
-}
-
-
-// Check string for errors
-bool Expression::checkError()
+// Removes a possible spare outer parantesis (this is due to the way I split the expressions at the operator with the highest predence, for example (4+5*3) will split as "(4" and "5*3)" )
+std::string Expression::fixParenthesis(std::string str)
 {
-  // If the string contains non valid characters
-  if(_str.find_first_not_of(_allowedCharacters)!=std::string::npos)
-    throw std::invalid_argument("Exp contains illegal character");
-
-  return true;
-}
-// Prepare the string before we split it in parts
-int Expression::preProcess()
-{
-  
-  // Prepare the string for the algorithm:
-  // 1. Add * between character and paranthesis. 
-  // 2. Remove all spaces in the expression, for example (a + b) => (a+b)
-  // 3. Add * between letter and number, i.e. 3b=>3*b
-  // TODO 4: Unary -
-  
-  // 5. Replace sin etc. with single charcter because toTree() will have hard to split the string otherwise
-  replaceString(_str,"sin","#");
-  replaceString(_str,"cos","%");
-  replaceString(_str,"ln","&");
-  
-  
-  char lastCharacter = 0;
-  for(unsigned int i = 0; i < _str.length(); ++i) {
-    // 1. * Before parantesis: a(b+c), 5(b+c) or (a+b)(c+d)
-    if(_str[i] == '(' && (isNumber(lastCharacter) || isVariable(lastCharacter) || lastCharacter==')')){
-      _str.insert(i,1,'*');
-      i++;
-    }
-    // 2. Remove all spaces in the expression, for example (a + b) => (a+b)
-    if(_str[i]==' '){
-      _str.erase(i,1);
-      i--;
-    }
-    
-    // 3. Add * between letter and number, i.e. 3b=>3*b
-    if(isNumber(lastCharacter) && isVariable(_str[i])){
-      _str.insert(i,1,'*');
-      i++;
-    }
-    
-    // 4. Add * between constant and sin/ln/cos: Asin(b) => A*sin(b)
-    if((isNumber(lastCharacter) || isVariable(lastCharacter)) && isFunction(_str[i])){
-      _str.insert(i,1,'*');
-      i++;
-    }
-    
-    
-    // Update last character
-    lastCharacter = _str[i];
+  int parentheses = 0;
+  for(unsigned int i = 0; i < str.length(); ++i) {
+    if(str[i] == '(')
+      parentheses++;
+    else if(str[i] == ')')
+      parentheses--;
   }
+  // If we have an extra ) at the end we remove it 
+  if(parentheses==1 && str[0]=='(')
+    str.erase(0,1);
+  // If we have an extra ( at the beginning we remove it 
+  else if(parentheses==-1 && str[str.length()-1] == ')')
+    str.erase(str.length()-1,1);
   
-  return 0;
+  return str;
 }
-
 
 
 
@@ -206,29 +130,107 @@ int Expression::getHighestPrecedence(std::string str)
   return groundestPosition;
 }
 
-// Removes a possible spare outer parantesis (this is due to the way I split the expressions at the operator with the highest predence, for example (4+5*3) will split as "(4" and "5*3)" )
-std::string Expression::fixParenthesis(std::string str)
+// Prepare the string before we split it in parts
+int Expression::preProcess()
 {
-  int parentheses = 0;
-  for(unsigned int i = 0; i < str.length(); ++i) {
-    if(str[i] == '(')
-      parentheses++;
-    else if(str[i] == ')')
-      parentheses--;
-  }
-  // If we have an extra ) at the end we remove it 
-  if(parentheses==1 && str[0]=='(')
-    str.erase(0,1);
-  // If we have an extra ( at the beginning we remove it 
-  else if(parentheses==-1 && str[str.length()-1] == ')')
-    str.erase(str.length()-1,1);
   
-  return str;
+  // Prepare the string for the algorithm:
+  // 1. Add * between character and paranthesis. 
+  // 2. Remove all spaces in the expression, for example (a + b) => (a+b)
+  // 3. Add * between letter and number, i.e. 3b=>3*b
+  // TODO 4: Unary -
+  
+  // 5. Replace sin etc. with single charcter because toTree() will have hard to split the string otherwise
+  replaceString(_str,"sin","#");
+  replaceString(_str,"cos","%");
+  replaceString(_str,"ln","&");
+  
+  
+  char lastCharacter = 0;
+  for(unsigned int i = 0; i < _str.length(); ++i) {
+    // 1. * Before parantesis: a(b+c), 5(b+c) or (a+b)(c+d)
+    if(_str[i] == '(' && (isNumber(lastCharacter) || isVariable(lastCharacter) || lastCharacter==')')){
+      _str.insert(i,1,'*');
+      i++;
+    }
+    // 2. Remove all spaces in the expression, for example (a + b) => (a+b)
+    if(_str[i]==' '){
+      _str.erase(i,1);
+      i--;
+    }
+    
+    // 3. Add * between letter and number, i.e. 3b=>3*b
+    if(isNumber(lastCharacter) && isVariable(_str[i])){
+      _str.insert(i,1,'*');
+      i++;
+    }
+    
+    // 4. Add * between constant and sin/ln/cos: Asin(b) => A*sin(b)
+    if((isNumber(lastCharacter) || isVariable(lastCharacter)) && isFunction(_str[i])){
+      _str.insert(i,1,'*');
+      i++;
+    }
+    
+    
+    // Update last character
+    lastCharacter = _str[i];
+  }
+  
+  return 0;
+}
+
+
+// Recursive method to create an tree from a string
+void Expression::toTree(Node* currNode, std::string currStr)
+{ 
+  int pos = getHighestPrecedence(currStr);
+
+  // the currStr doesn't contain any operator
+  if(pos==-1){
+    currNode->setData(trim(currStr));
+  }
+  else{
+    currNode->setData(std::string(1,currStr[pos]));
+    currNode->setRight(new Node());
+    currNode->setLeft(new Node());
+    
+    toTree(currNode->getLeft(), fixParenthesis(currStr.substr(0,pos)));
+    toTree(currNode->getRight(), fixParenthesis(currStr.substr(pos+1)));
+  }
 }
 
 
 
+// Creates an tree from the string
+Node* Expression::toTree(){
+  preProcess();
+  Node* central = new Node();
+  toTree(central, _str);
+  
+  return central;
+}
 
+
+// Check string for errors
+bool Expression::checkError()
+{
+  // If the string contains non valid characters
+  if(_str.find_first_not_of(_allowedCharacters)!=std::string::npos)
+    throw std::invalid_argument("Exp contains illegal character");
+
+  return true;
+}
+
+
+// Create a new object
+Expression::Expression(std::string str)
+{
+  _str = str;
+  checkError();
+}
+
+
+// Overload << so we can print this class easy!
 std::ostream& operator<<(std::ostream& out, const Expression& exp)
 {
   // Since operator << is a friend of the Expression class, we can access Expression's members directly.

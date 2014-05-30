@@ -26,14 +26,16 @@ class Expression
   static std::string fixParenthesis(std::string);
 
   static int getHighestPrecedence(std::string);
+  int preProcess();
   void toTree(Node*, std::string);
 
-  int preProcess();
      
  public:
-  Expression(std::string);
   Node* toTree();
   bool checkError();
+
+  Expression(std::string);
+
   friend std::ostream& operator<<(std::ostream&, const Expression&);
 
 };
