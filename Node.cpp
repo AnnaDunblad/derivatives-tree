@@ -41,7 +41,7 @@ Node* Node::differentiate(std::string var)
 
 	return differentiate(var,this,newNode);
 }
-
+//kommentar
  // differentiate this tree, recursive
 Node* Node::differentiate(std::string variable,Node* node, Node* newNode )
  {
