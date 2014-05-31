@@ -67,8 +67,10 @@ int main(int argc, char* argv[])
     // ------------------------------------------  
   newExpression:
     do{
+      std::cout << "-------------------------------------"<<std::endl;
       std::cout << "Where do you have the expressions?"<< std::endl;
       std::cout << "1. File"<<std::endl<<"2. Terminal"<<std::endl;
+      std::cout << "-------------------------------------"<<std::endl;
       std::cin >> selection; 
     }while(selection < 1 || selection>2);
     
@@ -118,8 +120,10 @@ int main(int argc, char* argv[])
     // ------------------------------------------
   newViz:
     do{
+      std::cout << "-------------------------------------"<<std::endl;
       std::cout << "How do you prefer the visualizing of expressions?" <<std::endl;
       std::cout << "1. Tree " << std::endl << "2. String" <<std::endl;
+      std::cout << "-------------------------------------"<<std::endl;
       std::cin >> selection;
     }while(selection<1 || selection > 2);
     treeViz = selection==1; 
@@ -203,6 +207,10 @@ int main(int argc, char* argv[])
   argc = 1; 
   
   
+
+
+
+
   
   
   // NOTE: Exits loop by using goto (This is the last remaining stronghold for the use of goto)
@@ -212,6 +220,7 @@ int main(int argc, char* argv[])
   // Ask the user how to manipulate expression
   // ------------------------------------------  
     do{
+      std::cout << "-------------------------------------"<<std::endl;
       std::cout << "What do you want to do now?" << std::endl;
       std::cout << "1. Differentiate expression(s)" << std::endl;
       std::cout << "2. Shorten expression(s)" << std::endl;
@@ -221,6 +230,7 @@ int main(int argc, char* argv[])
       std::cout << "6. Input new expresion(s)" << std::endl;
       std::cout << "7. Change vizualisation"<<std::endl;
       std::cout << "8. End program"<<std::endl;
+      std::cout << "-------------------------------------"<<std::endl;
       std::cin >> selection;
     }while(selection<1 || selection>8);
     
