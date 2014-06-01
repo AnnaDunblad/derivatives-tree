@@ -54,7 +54,11 @@ std::ostream& operator<<(std::ostream& output,Node* node)
 {
 if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return only that node
 	{
-		 return output << node->getData();
+		if(node->getNumber()<0)
+			return output << "("<< node->getData() << ")" ;
+		else 
+			 return output << node->getData();
+		 
 	}
 	std::string op;	
 	switch(node->getOperator())
@@ -88,7 +92,7 @@ if(!node->getLeft() || !node->getRight())	//if tree is only of one node, return 
 	{
 		return  output <<  "(" << node->getLeft() << ")" <<  op  <<  node->getRight();
 	}
-	
+
 	
 	return  output << node->getLeft() << op << node->getRight();
 	
